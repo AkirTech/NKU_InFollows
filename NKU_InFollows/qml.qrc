@@ -1,0 +1,10 @@
+<RCC>
+    <qresource prefix="/qt/qml/nku_infollows">
+        <file>main.qml</file>
+        <file>Greet.qml</file>
+        <file>Collect1.qml</file>
+        <file>Translation_zh_Hans.ts</file>
+        <file>Style.qml</file>
+        <file>MyButton.qml</file>
+    </qresource>
+</RCC>

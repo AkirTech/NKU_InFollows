@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36930.0 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NKU_InFollows", "NKU_InFollows\NKU_InFollows.vcxproj", "{568CC832-F552-410A-9DE2-73E865CF3E0E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{568CC832-F552-410A-9DE2-73E865CF3E0E}.Debug|x64.ActiveCfg = Debug|x64
+		{568CC832-F552-410A-9DE2-73E865CF3E0E}.Debug|x64.Build.0 = Debug|x64
+		{568CC832-F552-410A-9DE2-73E865CF3E0E}.Release|x64.ActiveCfg = Release|x64
+		{568CC832-F552-410A-9DE2-73E865CF3E0E}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {58B3C69A-73F3-4B49-A665-16E12C4C7461}
+	EndGlobalSection
+EndGlobal
