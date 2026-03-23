@@ -5,6 +5,8 @@ import QtQuick.Layouts
 import QtQuick.Controls.Material
 
 ApplicationWindow {
+    Material.theme: Material.Dark
+    Material.accent: "#66cc66"
     visible: true
     width: 640
     height: 480
