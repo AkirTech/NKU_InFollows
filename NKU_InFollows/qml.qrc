@@ -6,5 +6,6 @@
         <file>Translation_zh_Hans.ts</file>
         <file>Style.qml</file>
         <file>MyButton.qml</file>
+        <file>NKU_InFollows_icon.png</file>
     </qresource>
 </RCC>

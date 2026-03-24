@@ -178,7 +178,7 @@ Rectangle {
             console.log(item.text);
             array.push(item.text);
         }
-        return JSON.stringify(array, null, 2);
+        return JSON.stringify(array, null, 0);
     }
 
 

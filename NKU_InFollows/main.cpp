@@ -2,6 +2,7 @@
 #include <QQmlApplicationEngine>
 #include <QMessageBox>
 #include <QQmlContext>
+#include <qdebug.h>
 #include "fileio.h"
 int main(int argc, char *argv[])
 {
@@ -13,6 +14,8 @@ int main(int argc, char *argv[])
 	FileIO fileIO;
 
     QGuiApplication app(argc, argv);
+	app.setWindowIcon(QIcon(QCoreApplication::applicationDirPath() + "/NKU_InFollows_icon.png"));
+	qInfo() << "Application directory path: " << QCoreApplication::applicationDirPath();
 
     QQmlApplicationEngine engine;
     engine.load(QUrl(QStringLiteral("qrc:/qt/qml/nku_infollows/main.qml")));

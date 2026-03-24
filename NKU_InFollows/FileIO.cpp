@@ -18,7 +18,7 @@ void FileIO::save(const QString& jsonString,const QString& fileName = QString("/
     QFile file(filePath);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
 
-        qWarning() << "[Internal Error 503]" << file.errorString();
+        qWarning()   << "[Internal Error 503]" << file.errorString();
         return;
     }
 
