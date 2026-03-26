@@ -5,6 +5,12 @@
 # Visual Studio files
 x64/*
 .vs/
+.vscode/
+
+#Git ignore file for NKU_InFollows/backend
+
+NKU_InFollows/backend/python-3.12.6-embed-amd64/
+NKU_InFollows/backend/we-mp-rss/
 
 # Compiled Object files
 *.slo

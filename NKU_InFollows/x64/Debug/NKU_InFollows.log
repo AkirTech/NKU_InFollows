@@ -1,4 +1,30 @@
-﻿   Qt/MSBuild: 3.4.1.0
+﻿   Qt/MSBuild: 3.5.0.0
    Qt: 6.5.3
-  main.cpp
+  FileIO.cpp
+K:\InFollows\NKU_InFollows\NKU_InFollows\FileIO.cpp(1,1): warning C4828: 文件包含在偏移 0x132 处开始的字符，该字符在当前源字符集中无效(代码页 65001)。
+K:\InFollows\NKU_InFollows\NKU_InFollows\FileIO.cpp(1,1): warning C4828: 文件包含在偏移 0x134 处开始的字符，该字符在当前源字符集中无效(代码页 65001)。
+K:\InFollows\NKU_InFollows\NKU_InFollows\FileIO.cpp(1,1): warning C4828: 文件包含在偏移 0x135 处开始的字符，该字符在当前源字符集中无效(代码页 65001)。
+K:\InFollows\NKU_InFollows\NKU_InFollows\FileIO.cpp(1,1): warning C4828: 文件包含在偏移 0x138 处开始的字符，该字符在当前源字符集中无效(代码页 65001)。
+K:\InFollows\NKU_InFollows\NKU_InFollows\FileIO.cpp(1,1): warning C4828: 文件包含在偏移 0x139 处开始的字符，该字符在当前源字符集中无效(代码页 65001)。
+K:\InFollows\NKU_InFollows\NKU_InFollows\FileIO.cpp(1,1): warning C4828: 文件包含在偏移 0x13a 处开始的字符，该字符在当前源字符集中无效(代码页 65001)。
+K:\InFollows\NKU_InFollows\NKU_InFollows\FileIO.cpp(1,1): warning C4828: 文件包含在偏移 0x13b 处开始的字符，该字符在当前源字符集中无效(代码页 65001)。
+K:\InFollows\NKU_InFollows\NKU_InFollows\FileIO.cpp(1,1): warning C4828: 文件包含在偏移 0x13c 处开始的字符，该字符在当前源字符集中无效(代码页 65001)。
+K:\InFollows\NKU_InFollows\NKU_InFollows\FileIO.cpp(1,1): warning C4828: 文件包含在偏移 0x13d 处开始的字符，该字符在当前源字符集中无效(代码页 65001)。
+K:\InFollows\NKU_InFollows\NKU_InFollows\FileIO.cpp(1,1): warning C4828: 文件包含在偏移 0x140 处开始的字符，该字符在当前源字符集中无效(代码页 65001)。
+K:\InFollows\NKU_InFollows\NKU_InFollows\FileIO.cpp(1,1): warning C4828: 文件包含在偏移 0x141 处开始的字符，该字符在当前源字符集中无效(代码页 65001)。
+K:\InFollows\NKU_InFollows\NKU_InFollows\FileIO.cpp(1,1): warning C4828: 文件包含在偏移 0x142 处开始的字符，该字符在当前源字符集中无效(代码页 65001)。
+K:\InFollows\NKU_InFollows\NKU_InFollows\FileIO.cpp(1,1): warning C4828: 文件包含在偏移 0x143 处开始的字符，该字符在当前源字符集中无效(代码页 65001)。
+K:\InFollows\NKU_InFollows\NKU_InFollows\FileIO.cpp(1,1): warning C4828: 文件包含在偏移 0x144 处开始的字符，该字符在当前源字符集中无效(代码页 65001)。
+K:\InFollows\NKU_InFollows\NKU_InFollows\FileIO.cpp(1,1): warning C4828: 文件包含在偏移 0x145 处开始的字符，该字符在当前源字符集中无效(代码页 65001)。
+K:\InFollows\NKU_InFollows\NKU_InFollows\FileIO.cpp(1,1): warning C4828: 文件包含在偏移 0x146 处开始的字符，该字符在当前源字符集中无效(代码页 65001)。
+K:\InFollows\NKU_InFollows\NKU_InFollows\FileIO.cpp(1,1): warning C4828: 文件包含在偏移 0x148 处开始的字符，该字符在当前源字符集中无效(代码页 65001)。
+K:\InFollows\NKU_InFollows\NKU_InFollows\FileIO.cpp(1,1): warning C4828: 文件包含在偏移 0x14c 处开始的字符，该字符在当前源字符集中无效(代码页 65001)。
+K:\InFollows\NKU_InFollows\NKU_InFollows\FileIO.cpp(1,1): warning C4828: 文件包含在偏移 0x14e 处开始的字符，该字符在当前源字符集中无效(代码页 65001)。
+K:\InFollows\NKU_InFollows\NKU_InFollows\FileIO.cpp(1,1): warning C4828: 文件包含在偏移 0x14f 处开始的字符，该字符在当前源字符集中无效(代码页 65001)。
+K:\InFollows\NKU_InFollows\NKU_InFollows\FileIO.cpp(1,1): warning C4828: 文件包含在偏移 0x151 处开始的字符，该字符在当前源字符集中无效(代码页 65001)。
+K:\InFollows\NKU_InFollows\NKU_InFollows\FileIO.cpp(1,1): warning C4828: 文件包含在偏移 0x155 处开始的字符，该字符在当前源字符集中无效(代码页 65001)。
+K:\InFollows\NKU_InFollows\NKU_InFollows\FileIO.cpp(1,1): warning C4828: 文件包含在偏移 0x156 处开始的字符，该字符在当前源字符集中无效(代码页 65001)。
+K:\InFollows\NKU_InFollows\NKU_InFollows\FileIO.cpp(1,1): warning C4828: 文件包含在偏移 0x158 处开始的字符，该字符在当前源字符集中无效(代码页 65001)。
+K:\InFollows\NKU_InFollows\NKU_InFollows\FileIO.cpp(1,1): warning C4828: 文件包含在偏移 0x159 处开始的字符，该字符在当前源字符集中无效(代码页 65001)。
+  qrc_qml.cpp
   NKU_InFollows.vcxproj -> K:\InFollows\NKU_InFollows\x64\Debug\NKU_InFollows.exe
