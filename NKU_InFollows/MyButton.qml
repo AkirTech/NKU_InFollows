@@ -1,4 +1,4 @@
-// 例如，创建一个自定义样式的按钮组件 RoundedButton.qml
+﻿// 例如，创建一个自定义样式的按钮组件 RoundedButton.qml
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Effects
