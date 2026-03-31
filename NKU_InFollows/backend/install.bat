@@ -7,7 +7,11 @@ echo Downloading pip...
 cd python-3.13.12-embed-amd64
 xcopy ../python3.13.12._pth . /Y
 xcopy ../pip.ini . /Y
-xcopy ../get-pip.py . /Y
+
+wget https://bootstrap.pypa.io/get-pip.py
+python get-pip.py
+
+@REM You can also use: py -m ensurepip --upgrade
 
 echo Building we-mp-rss...
 git clone https://gh.llkk.cc/https://github.com/rachelos/we-mp-rss.git
