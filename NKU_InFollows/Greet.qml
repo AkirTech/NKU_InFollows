@@ -162,27 +162,15 @@ Rectangle {
             shadowBlur: 0.3
         }
 
-        SequentialAnimation {
-            id: spacingAnimation
-            loops: Animation.Infinite
+        NumberAnimation {
+            target: greettext
+            property: "opacity"
+            from: 0.0
+            to: 1.0
+            duration: 3000
+            easing.type: Easing.InOutQuad
+            loops: 1
             running: true
-
-            NumberAnimation {
-                target: greettext
-                property: "font.letterSpacing"
-                from: 2
-                to: 8
-                duration: 1500
-                easing.type: Easing.InOutQuad
-            }
-            NumberAnimation {
-                target: greettext
-                property: "font.letterSpacing"
-                from: 8
-                to: 2
-                duration: 1500
-                easing.type: Easing.InOutQuad
-            }
         }
     }
     

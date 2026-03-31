@@ -1,10 +1,13 @@
-import QtQuick 
+﻿import QtQuick 
 import QtQuick.Window 
 import QtQuick.Controls 
 import QtQuick.Layouts 
 import QtQuick.Controls.Material
 
 ApplicationWindow {
+
+    property int currentIndex: 0
+    id: mainWindow
     Material.theme: Material.Dark
     Material.accent: "#66cc66"
     visible: true
@@ -25,18 +28,18 @@ ApplicationWindow {
         anchors.horizontalCenterOffset: 200
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.bottom: parent.bottom
-        anchors.bottomMargin: 10
+        anchors.bottomMargin: 20
         
-        textPointSize: 25
-        text: "Next"
+        textPointSize: 20
+        text: "Next ->"
         onClicked: {
-        var ci = stackView.currentItem
-        if (ci === "Greet.qml"){
-            stackView.push("Collect1.qml")
+            if (mainWindow.currentIndex === 0) {
+                stackView.push("Collect1.qml")
+                mainWindow.currentIndex = 1
+            } else if (mainWindow.currentIndex === 1) {
+                stackView.push("Settings.qml")
+                mainWindow.currentIndex = 2
             }
-        else if (ci === "Collect1.qml"){
-            stackView.push("Settings.qml")
-        }
         }
 
     }
@@ -44,16 +47,18 @@ ApplicationWindow {
         id : buttonback
         width:160
         height:40
+        visible: mainWindow.currentIndex > 0
         anchors.horizontalCenterOffset: -200
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.bottom: parent.bottom
-        anchors.bottomMargin: 10
+        anchors.bottomMargin: 20
         textPointSize: 25
         text: "Back"
         onClicked: {
-            stackView.pop()
+            stackView.pop();
+            mainWindow.currentIndex -=1;
         }
 
     }
-    
+
 }

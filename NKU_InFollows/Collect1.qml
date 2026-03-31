@@ -155,7 +155,10 @@ Rectangle {
             anchors.left: parent.left
             anchors.leftMargin: 100
             text: "   Add   "
-            onClicked: addTag()
+            onClicked: {
+                addTag()
+                tagInput.forceActiveFocus()
+            }
         }
         MyButton {
             id: saveButton

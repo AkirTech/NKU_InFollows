@@ -15,6 +15,7 @@ python get-pip.py
 
 echo Building we-mp-rss...
 git clone https://gh.llkk.cc/https://github.com/rachelos/we-mp-rss.git
+@REM For local users.
 @REM Original: git clone https://github.com/rachelos/we-mp-rss.git
 
 cd ../we-mp-rss/ && ../python-3.13.12-embed-amd64/python.exe -m pip install -r we-mp-rss/requirements.txt
