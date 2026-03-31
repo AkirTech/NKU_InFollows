@@ -19,12 +19,12 @@ Button {
     property int textRightMargin : 10
     property int radius: 15
 
-    property color baseColor: "#FFFFFF"
+    property color baseColor: "#2196f3"
     property color bordercolor: "transparent"
-    property color textColor: "#b9f6ca"
+    property color textColor: "#ffffff"
     property color guideColor: "#4c6ef5"
-    property color hoverColor: "#f0f8ff"
-    property color pressedColor: "#e6f2ff"
+    property color hoverColor: "#1769ab"
+    property color pressedColor: "#1769ab"
     property int textPointSize: 20
     property bool enableShadow: true
     // Fontsize
@@ -110,44 +110,43 @@ Button {
         }
     }
     
-    contentItem: 
-     Item {
-    // 让内容项自动撑满按钮
-    implicitWidth: row.implicitWidth
-    implicitHeight: row.implicitHeight
+    contentItem: Item {
+        // 让内容项自动撑满按钮
+        implicitWidth: row.implicitWidth
+        implicitHeight: row.implicitHeight
 
-    Row {
-        id: row
-        anchors.centerIn: parent
-        spacing: control.iconSpacing
-        // 通过 LayoutMirroring 实现图标在右
-        LayoutMirroring.enabled: control.iconPosition === "right"
-        LayoutMirroring.childrenInherit: true
+        Row {
+            id: row
+            anchors.centerIn: parent
+            spacing: control.iconSpacing
+            // 通过 LayoutMirroring 实现图标在右
+            LayoutMirroring.enabled: control.iconPosition === "right"
+            LayoutMirroring.childrenInherit: true
 
-        Image {
-            source: control.iconSource
-            sourceSize.width: control.iconWidth
-            sourceSize.height: control.iconHeight
-            width: control.iconWidth
-            height: control.iconHeight
-            fillMode: Image.PreserveAspectFit
-            visible: source.toString() !== ""   // 无图标时隐藏
-        }
+            Image {
+                source: control.iconSource
+                sourceSize.width: control.iconWidth
+                sourceSize.height: control.iconHeight
+                width: control.iconWidth
+                height: control.iconHeight
+                fillMode: Image.PreserveAspectFit
+                visible: source.toString() !== ""   // 无图标时隐藏
+            }
 
-        Text {
-            text: control.text
-            color: control.textColor
-            anchors.top : parent.top
-            anchors.topMargin: 8                // 上边距!!!!!
-           // anchors.bottomMargin:control.textRightMargin
-            //anchors.leftMargin: control.textLeftMargin
-            //anchors.rightMargin: control.textLeftMargin
-            font.pointSize: control.textPointSize
-            horizontalAlignment: Text.AlignHCenter
-            verticalAlignment: Text.AlignVCenter
-            opacity: control.pressed ? 0.5 : 0.8
+            Text {
+                text: control.text
+                color: control.textColor
+                anchors.top : parent.top
+                anchors.topMargin: 8                // 上边距!!!!!
+               // anchors.bottomMargin:control.textRightMargin
+                //anchors.leftMargin: control.textLeftMargin
+                //anchors.rightMargin: control.textLeftMargin
+                font.pointSize: control.textPointSize
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                font.family: "Segoe UI"
+                opacity: control.pressed ? 0.5 : 0.8
+            }
         }
     }
-}
-    
 }

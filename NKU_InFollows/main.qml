@@ -9,12 +9,11 @@ ApplicationWindow {
     property int currentIndex: 0
     id: mainWindow
     Material.theme: Material.Dark
-    Material.accent: "#66cc66"
     visible: true
-    width: 640
-    height: 480
+    width: 768
+    height: 512
     title: "NKU_InFollows"
-    color: "#ffffff"
+    color: "#121212"
     StackView {
         id : stackView
         anchors.fill: parent
@@ -23,37 +22,44 @@ ApplicationWindow {
 
     MyButton { 
         id : buttonnext
-        width:160
+        width:60
         height:40
-        anchors.horizontalCenterOffset: 200
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: 20
+        anchors.verticalCenter:parent.verticalCenter
+        anchors.right: parent.right
+        anchors.rightMargin: 30
         
+        baseColor: "#1e1e1e"
+        bordercolor: "#424242"
+        textColor: "#e0e0e0"
+        guideColor: "#2196f3"
         textPointSize: 20
-        text: "Next ->"
+        text: ">"
         onClicked: {
             if (mainWindow.currentIndex === 0) {
-                stackView.push("Collect1.qml")
-                mainWindow.currentIndex = 1
+                stackView.push("Collect1.qml");
+                mainWindow.currentIndex  = 1;
             } else if (mainWindow.currentIndex === 1) {
-                stackView.push("Settings.qml")
-                mainWindow.currentIndex = 2
+                stackView.push("Settings.qml");
+                mainWindow.currentIndex = 2;
             }
         }
 
     }
     MyButton { 
         id : buttonback
-        width:160
+        width:60
         height:40
         visible: mainWindow.currentIndex > 0
-        anchors.horizontalCenterOffset: -200
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: 20
+        anchors.verticalCenter:parent.verticalCenter
+        anchors.left: parent.left
+        anchors.leftMargin: 30
+        
+        baseColor: "#1e1e1e"
+        bordercolor: "#424242"
+        textColor: "#e0e0e0"
+        guideColor: "#2196f3"
         textPointSize: 25
-        text: "Back"
+        text: "<"
         onClicked: {
             stackView.pop();
             mainWindow.currentIndex -=1;

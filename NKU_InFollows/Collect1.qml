@@ -2,12 +2,17 @@
 import QtQuick.Window 
 import QtQuick.Controls
 import QtQuick.Controls.Material
+import QtQuick.Shapes
 
 Rectangle {
     id: mainrect
     width: 640
     height: 400
-    color: "#fefefe"
+    anchors.top : parent.top
+    
+    anchors.horizontalCenter:parent.horizontalCenter
+    anchors.topMargin: 30
+    color: "transparent"
 
     Text {
         id: testtag
@@ -15,38 +20,33 @@ Rectangle {
         anchors.topMargin: 15
         anchors.horizontalCenter: parent.horizontalCenter
         font.pointSize: 20
-        color: "#000000"
+        font.weight: Font.Medium
+        color: "#e0e0e0"
         text: "Tag yourself!"
     }
 
 Rectangle {
     id: tagContainer
-    border.color: tagModel.count > 0 ? "#000000" : "#ccc"   
-    // 有数据时使用黑色边框，无数据时使用灰色边框
-    border.width: 2
-    radius: 5
+    border.color: tagModel.count > 0 ? "#424242" : "#37474f"
+    border.width: 1
+    radius: 8
     anchors.top : testtag.bottom
     anchors.centerIn: parent
     anchors.topMargin: 20
-    width: 400   // 与 ListView 宽度一致
-    height: 220  // 与 ListView 高度一致
-
-
+    width: 400
+    height: 220
+    color: "#1e1e1e"
 
     ListModel { id: tagModel
     }   
-
 
     // 正常显示的 ListView
     ListView {
         id: tagList
         anchors.fill: parent
         model: tagModel
-        visible: tagModel.count > 0   // 有数据时显示
+        visible: tagModel.count > 0
         delegate: Item {
-
-            
-
 
             Rectangle {
                 anchors.top :innerText.bottom
@@ -55,7 +55,7 @@ Rectangle {
                 anchors.leftMargin: 25
                 width: parent.width - 50
                 height: 1
-                color: "#eee"   // 浅灰色分割线
+                color: "#37474f"
             }
             width: tagList.width
             height: 30
@@ -68,11 +68,21 @@ Rectangle {
                 anchors.verticalCenter: parent.verticalCenter
                 text: model.text
                 font.pointSize: 14
-                color: "#333"
+                color: "#e0e0e0"
             }
             MouseArea {
                 anchors.fill: parent
+                hoverEnabled: true
+                cursorShape: Qt.PointingHandCursor
                 onClicked: tagModel.remove(index)
+                
+                onEntered: {
+                    innerText.color = "#2196f3"
+                }
+                
+                onExited: {
+                    innerText.color = "#e0e0e0"
+                }
             }
         }
     }
@@ -80,20 +90,19 @@ Rectangle {
     // 空状态占位框架
     Rectangle {
         anchors.fill: parent
-        visible: tagModel.count === 0   // 无数据时显示
-        color: "transparent"
-        border.color: "#ccc"
-        border.width: 2
-        radius: 5
+        visible: tagModel.count === 0
+        color: "#1e1e1e"
+        border.color: "#37474f"
+        border.width: 1
+        radius: 8
 
         Text {
             anchors.centerIn: parent
             text: "暂无标签，点击下方添加"
-            color: "#999"
+            color: "#757575"
             font.pointSize: 12
         }
 
-        // 可选：让占位框也能响应点击，比如聚焦到输入框
         MouseArea {
             anchors.fill: parent
             onClicked: tagInput.forceActiveFocus()
@@ -101,110 +110,118 @@ Rectangle {
     }
 }
 
-    Rectangle {
-        id: tagInputRect
-        width: 400
+Rectangle {
+    id: tagInputRect
+    width: 400
+    height: 40
+    anchors.top: tagContainer.bottom
+    anchors.topMargin: 20
+    anchors.horizontalCenter: parent.horizontalCenter
+    color: "#2d2d2d"
+    border.color: "#424242"
+    border.width: 1
+    radius: 8
+
+    Text {
+        id:textPlaceholder
+        anchors.fill : parent
+        anchors.top : parent.top
+        anchors.topMargin: 10
+        anchors.left: parent.left
+        anchors.leftMargin: 10
+        visible: !tagInput.activeFocus
+        font.pointSize: 12
+        font.italic: true
+        text : "Enter a tag and press Enter"
+        color:"#757575"
+    }
+
+    TextInput {
+        id: tagInput
+        anchors.fill: parent
+        anchors.leftMargin: 10
+        anchors.rightMargin: 10
+        verticalAlignment: TextInput.AlignVCenter
+        font.pointSize: 12
+        color: "#ffffff"
+        selectionColor: "#2196f3"
+        selectedTextColor: "#ffffff"
+        onAccepted: addTag()
+    }
+}
+Row{
+    anchors.top: tagInputRect.bottom
+     anchors.topMargin: 10
+     anchors.horizontalCenter: parent.horizontalCenter
+     spacing: 20
+    MyButton {
+        id: addButton
+        baseColor: "#1e1e1e"
+        bordercolor: "#424242"
+        textColor: "#e0e0e0"
+        guideColor:"#2196f3"
         height: 40
-        anchors.top: tagContainer.bottom
-        anchors.topMargin: 20
-        anchors.horizontalCenter: parent.horizontalCenter
-        color: "#fefefe"
-        border.color: "#000000"
-        border.width: 1
-        radius: 5
-
-        Text {
-            id:textPlaceholder
-            anchors.fill : parent
-            anchors.top : parent.top
-            anchors.topMargin: 10
-            anchors.left: parent.left
-            anchors.leftMargin: 10
-            visible: !tagInput.activeFocus  // 输入框为空时显示
-            font.pointSize: 12
-            font.italic: true
-            text : "Enter a tag and press Enter"
-            color:"#ccc"
-        }
-
-        TextInput {
-            id: tagInput
-            anchors.fill: parent
-            anchors.leftMargin: 5
-            anchors.rightMargin: 5
-            verticalAlignment: TextInput.AlignVCenter
-            font.pointSize: 12
-            color: "#000000"
-            onAccepted: addTag()   // 回车键添加
+        radius:10
+        textPointSize: 12
+        font.weight: Font.Medium
+        anchors.top: parent.top
+        anchors.topMargin: 10
+        anchors.left: parent.left
+        anchors.leftMargin: 100
+        font.family: "Segoe UI"
+        text: "   Add   "
+        onClicked: {
+            addTag()
+            tagInput.forceActiveFocus()
         }
     }
-    Row{
-        anchors.top: tagInputRect.bottom
-         anchors.topMargin: 10
-         anchors.horizontalCenter: parent.horizontalCenter
-         spacing: 20
-        MyButton {
-            id: addButton
-            bordercolor: "#ccc"
-            guideColor:"transparent"
-            height: 40
-            radius:10
-            textPointSize: 10
-            anchors.top: parent.top
-            anchors.topMargin: 10
-            anchors.left: parent.left
-            anchors.leftMargin: 100
-            text: "   Add   "
-            onClicked: {
-                addTag()
-                tagInput.forceActiveFocus()
-            }
-        }
-        MyButton {
-            id: saveButton
-            bordercolor: "#ccc"
-            guideColor:"transparent"
-            height:40
-            radius:10
-            textPointSize: 10
-            anchors.top: parent.top
-            anchors.topMargin: 10
-            anchors.right: parent.right
-            anchors.rightMargin: 100
-            text: " Save "
-            onClicked: saveTags()
-        }
+    MyButton {
+        id: saveButton
+        baseColor: "#1e1e1e"
+        bordercolor: "#2196f3"
+        textColor: "#2196f3"
+        guideColor:"#2196f3"
+        height:40
+        radius:10
+        textPointSize: 12
+        font.weight: Font.Medium
+        anchors.top: parent.top
+        anchors.topMargin: 10
+        anchors.right: parent.right
+        anchors.rightMargin: 100
+        font.family: "Segoe UI"
+        text: " Save "
+        onClicked: saveTags()
     }
+}
+
+function addTag() {
+    var text = tagInput.text.trim()
+    if (text !== "") {
+        tagModel.append({"text": text});
+        tagInput.text = "";
+    }
+}
+function saveTags() {
+    if (tagModel.count === 0) {
+        console.log("No tags to save.");
+        return;
+    }
+    else{
+         var jsonString = modelToJson(tagModel);
+         FileIO.save(jsonString,"/u_interests.json")
     
-
-    function addTag() {
-        var text = tagInput.text.trim()
-        if (text !== "") {
-            tagModel.append({"text": text});
-            tagInput.text = "";
         }
+}
+function modelToJson(model) {
+    var array = [];
+    for (var i = 0; i < model.count; i++) {
+        var item = model.get(i); // 返回 { role1: value1, role2: value2, ... }
+        // 如果需要，可以在这里添加额外的处理或过滤
+        console.log(item.text);
+        array.push(item.text);
     }
-    function saveTags() {
-        if (tagModel.count === 0) {
-            console.log("No tags to save.");
-            return;
-        }
-        else{
-             var jsonString = modelToJson(tagModel);
-             FileIO.save(jsonString,"/u_interests.json")
-        
-            }
-    }
-        function modelToJson(model) {
-        var array = [];
-        for (var i = 0; i < model.count; i++) {
-            var item = model.get(i); // 返回 { role1: value1, role2: value2, ... }
-            // 如果需要，可以在这里添加额外的处理或过滤
-            console.log(item.text);
-            array.push(item.text);
-        }
-        return JSON.stringify(array, null, 0);
-    }
-
+    return JSON.stringify(array, null, 0);
+}
 
 }

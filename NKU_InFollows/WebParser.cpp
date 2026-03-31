@@ -4,7 +4,7 @@
 #include <QtNetwork/QNetworkReply>
 #include <QUrl>
 #include <QDebug>
-#include <QEventLoop> // 用于同步等待（可选）
+#include <QEventLoop> // 锟斤拷锟斤拷同锟斤拷锟饺达拷锟斤拷锟斤拷选锟斤拷
 #include <QByteArray>
 #include <QObject>
 #include <QMessageBox>
@@ -31,6 +31,7 @@ private slots:
         if (reply->error() == QNetworkReply::NoError) {
             QByteArray data = reply->readAll();
             qDebug() << "Data:" << data;
+
             return QString::fromUtf8(data);
         }
         else {
