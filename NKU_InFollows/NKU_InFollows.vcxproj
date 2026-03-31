@@ -95,7 +95,9 @@
   <ItemGroup>
     <ClCompile Include="FileIO.cpp" />
     <ClCompile Include="main.cpp" />
+    <None Include="aiInit.qml" />
     <None Include="MyButton.qml" />
+    <None Include="Settings.qml" />
     <None Include="Style.qml" />
     <QtMoc Include="WebParser.cpp">
       <DynamicSource Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">input</DynamicSource>

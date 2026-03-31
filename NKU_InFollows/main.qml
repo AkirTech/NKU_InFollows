@@ -30,7 +30,13 @@ ApplicationWindow {
         textPointSize: 25
         text: "Next"
         onClicked: {
+        var ci = stackView.currentItem
+        if (ci === "Greet.qml"){
             stackView.push("Collect1.qml")
+            }
+        else if (ci === "Collect1.qml"){
+            stackView.push("Settings.qml")
+        }
         }
 
     }
@@ -49,4 +55,5 @@ ApplicationWindow {
         }
 
     }
+    
 }

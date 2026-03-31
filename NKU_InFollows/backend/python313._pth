@@ -1,5 +1,6 @@
-python312.zip
+python313.zip
 .
+../we-mp-rss
 
 # Uncomment to run site.main() automatically
 import site

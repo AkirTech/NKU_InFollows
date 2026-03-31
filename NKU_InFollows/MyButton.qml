@@ -1,4 +1,4 @@
-﻿// 例如，创建一个自定义样式的按钮组件 RoundedButton.qml
+// 例如，创建一个自定义样式的按钮组件 RoundedButton.qml
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Effects
@@ -20,50 +20,94 @@ Button {
     property int radius: 15
 
     property color baseColor: "#FFFFFF"
-    property color bordercolor: "#1098ad"
-    property color textColor: bordercolor
+    property color bordercolor: "transparent"
+    property color textColor: "#b9f6ca"
     property color guideColor: "#4c6ef5"
+    property color hoverColor: "#f0f8ff"
+    property color pressedColor: "#e6f2ff"
     property int textPointSize: 20
+    property bool enableShadow: true
     // Fontsize
     background: Rectangle {
-        id:mainBg
-        width:control.width
-        height:control.height
-        /*
-        gradient: Gradient {
-            GradientStop { position: 0.0; color: "#6ea3f2" }
-            GradientStop { position: 1.0; color: "#2e6bd1"}
-        }
-        */
-        color: control.baseColor
+        id: mainBg
+        width: control.width
+        height: control.height
         
-        border.color: control.bordercolor
-        border.width: 2
+        color: control.pressed ? control.pressedColor : (control.hovered ? control.hoverColor : control.baseColor)
         
         radius: control.radius
-        Rectangle {                         //左边矩形
-            id:inBg
-            width: 8
-            height: parent.height -  mainBg.radius      // 边框厚度
-            color: control.guideColor    // 边框颜色
-            anchors.left:parent.left
-            anchors.verticalCenter:parent.verticalCenter
-            radius:3
-        }
-        /* MultiEffect {
-        source: inBg
-        anchors.fill: parent
-        // 关键：启用自动内边距，防止阴影被父项裁剪
-        autoPaddingEnabled: true 
         
-        // 启用并配置阴影
-        shadowEnabled: true
-        shadowColor: "#80000000" // 半透明黑色 
-        shadowBlur: 0.2          // 模糊程度 (0.0 - 1.0) 
-        shadowHorizontalOffset: 2  // 水平偏移
-        shadowVerticalOffset: 1    // 垂直偏移 [citation:10]
-        // shadowOpacity: 0.8       // 也可以单独控制透明度
-    }*/
+        layer.enabled: control.enableShadow
+        layer.effect: MultiEffect {
+            shadowEnabled: control.enableShadow
+            shadowColor: "#30000000"
+            shadowBlur: 0.4
+            shadowVerticalOffset: 3
+            shadowHorizontalOffset: 0
+            autoPaddingEnabled: true
+        }
+        
+        Rectangle {
+            id: borderRect
+            anchors.fill: parent
+            radius: control.radius
+            color: "transparent"
+            border.width: 2
+            border.color: control.bordercolor
+            
+            Rectangle {
+                anchors.fill: parent
+                radius: control.radius
+                color: "transparent"
+                border.width: 2
+                border.color: "transparent"
+                /*Rectangle {
+                    width: parent.width
+                    height: 2
+                    anchors.top: parent.top
+                    gradient: Gradient {
+                        GradientStop { position: 0.0; color: control.guideColor }
+                        GradientStop { position: 1.0; color: control.bordercolor }
+                    }
+                }
+                Rectangle {
+                    width: 2
+                    height: parent.height
+                    anchors.left: parent.left
+                    gradient: Gradient {
+                        GradientStop { position: 0.0; color: control.guideColor }
+                        GradientStop { position: 1.0; color: control.bordercolor }
+                    }
+                }
+                Rectangle {
+                    width: 2
+                    height: parent.height
+                    anchors.right: parent.right
+                    color: control.bordercolor
+                }
+                Rectangle {
+                    width: parent.width
+                    height: 2
+                    anchors.bottom: parent.bottom
+                    color: control.bordercolor
+                } */
+            }
+        }
+        
+        Rectangle {
+            id: glowEffect
+            anchors.fill: parent
+            radius: control.radius
+            color: control.guideColor
+            opacity: control.hovered ? 0.1 : 0.0
+            
+            Behavior on opacity {
+                NumberAnimation {
+                    duration: 150
+                    easing.type: Easing.InOutQuad
+                }
+            }
+        }
     }
     
     contentItem: 
@@ -101,6 +145,7 @@ Button {
             font.pointSize: control.textPointSize
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
+            opacity: control.pressed ? 0.5 : 0.8
         }
     }
 }

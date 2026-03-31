@@ -138,19 +138,41 @@ Rectangle {
             onAccepted: addTag()   // 回车键添加
         }
     }
-
-    MyButton {
-        id: addButton
-        bordercolor: "#4c6ef5"
-        guideColor:"transparent"
-        radius:10
-        textPointSize: 15
+    Row{
         anchors.top: tagInputRect.bottom
-        anchors.topMargin: 10
-        anchors.horizontalCenter: parent.horizontalCenter
-        text: "   Add   "
-        onClicked: saveTags()
+         anchors.topMargin: 10
+         anchors.horizontalCenter: parent.horizontalCenter
+         spacing: 20
+        MyButton {
+            id: addButton
+            bordercolor: "#ccc"
+            guideColor:"transparent"
+            height: 40
+            radius:10
+            textPointSize: 10
+            anchors.top: parent.top
+            anchors.topMargin: 10
+            anchors.left: parent.left
+            anchors.leftMargin: 100
+            text: "   Add   "
+            onClicked: addTag()
+        }
+        MyButton {
+            id: saveButton
+            bordercolor: "#ccc"
+            guideColor:"transparent"
+            height:40
+            radius:10
+            textPointSize: 10
+            anchors.top: parent.top
+            anchors.topMargin: 10
+            anchors.right: parent.right
+            anchors.rightMargin: 100
+            text: " Save "
+            onClicked: saveTags()
+        }
     }
+    
 
     function addTag() {
         var text = tagInput.text.trim()

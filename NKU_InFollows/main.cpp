@@ -22,6 +22,7 @@ int main(int argc, char *argv[])
 	engine.rootContext()->setContextProperty("appDirPath", QCoreApplication::applicationDirPath());
 	engine.rootContext()->setContextProperty("FileIO", &fileIO);
 	
+	
     if (engine.rootObjects().isEmpty())
         return -1;
 
