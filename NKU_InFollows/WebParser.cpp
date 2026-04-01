@@ -9,6 +9,7 @@
 #include <QObject>
 #include <QMessageBox>
 #include <QString>
+#include <QJsonObject>
 
 class WebParser : public QObject
 {
@@ -21,10 +22,54 @@ public:
             this, &WebParser::onFinished);
     }
 
-    void fetchUrl(const QUrl& url) {
-        QNetworkRequest request(url);
+    void fetchUrl(const QUrl& _url) {
+        QNetworkRequest request(_url);
         manager->get(request);
     }
+
+    void postRq(const QString &model ,const QString &u_msg,
+        const QString &s_msg,QUrl &baseUrl){
+        /*Used for users.*/
+        QJsonObject rqBody;
+        rqBody["model"] = model;
+        rqBody["stream"] = false;
+
+        QJsonObject this_u_msg;
+        this_u_msg["role"] = "user";
+        this_u_msg["content"]  = u_msg;
+
+        msgs.append(this_u_msg);
+        rqBody["messages"] = msgs;
+        
+        QJsonDocument doc(rqBody);
+        QByteArray jsonData = doc.toJson();
+
+        QNetworkRequest rq(baseUrl);
+        manager->post(rq,jsonData);
+
+    }
+
+    void postRq(const QString &model ,const QString &sys_prompt,
+            QUrl &baseUrl){
+        /*Used for single time call*/
+        QJsonObject rqBody;
+        rqBody["model"] = model;
+        rqBody["stream"] = false;
+        
+        QJsonObject sysp;
+        sysp["role"] = "system";
+        sysp["content"] = sys_prompt;
+
+        rqBody["messages"] = sysp;
+        QJsonDocument doc(rqBody);
+        QByteArray jsonData = doc.toJson();
+
+        QNetworkRequest rq(baseUrl);
+        manager->post(rq,jsonData);
+    }
+
+    QjsonArray msgs();
+    
 
 private slots:
     QString onFinished(QNetworkReply* reply) {
@@ -32,7 +77,7 @@ private slots:
             QByteArray data = reply->readAll();
             qDebug() << "Data:" << data;
 
-            return QString::fromUtf8(data);
+            return QString("OK");
         }
         else {
             qDebug() << "Error:" << reply->errorString();
