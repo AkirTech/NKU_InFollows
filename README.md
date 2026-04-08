@@ -1,9 +1,11 @@
 <div align="center">
 <h1 >NKU_InFollows</h1>
-[![Static Badge](https://img.shields.io/badge/Github?style=for-the-badge&label=repo&color=blue&logo=github)](https://github.com/AkirTech/NKU_InFollows)
-![Static Badge](https://img.shields.io/badge/C%2B%2B-17-red?style=for-the-badge&color=blue)
-![Static Badge](https://img.shields.io/badge/Qt-6.5.3-brightgreen?style=for-the-badge&color=blue)
-![Static Badge](https://img.shields.io/badge/Python-3.13-blue?style=for-the-badge&color=blue)
+<p>下一代的信息整合终端。</p>
+  
+[![Static Badge](https://img.shields.io/badge/Github-repo-blue?style=for-the-badge&logo=github)](https://github.com/AkirTech/NKU_InFollows)
+![Static Badge](https://img.shields.io/badge/C%2B%2B-17-red?style=for-the-badge)
+[![Static Badge](https://img.shields.io/badge/Qt-6.5.3-brightgreen?style=for-the-badge)](https://www.qt.io/)
+[![Static Badge](https://img.shields.io/badge/Python-3.13-blue?style=for-the-badge&color=blue)](https://www.python.org/downloads/release/python-31313/)
 
 </div>
 
@@ -24,4 +26,4 @@
 # 联系
 AkirTech（[邮箱（请复制此链接，将+改为@符号）](2514011+mail.nankai.edu.cn)）
 
-2026.3.23 更新
+2026.4.8 更新
