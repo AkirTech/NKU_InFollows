@@ -109,6 +109,7 @@ Rectangle {
         }
     }
 }
+/*
 
 Rectangle {
     id: tagInputRect
@@ -135,22 +136,26 @@ Rectangle {
         text : "Enter a tag and press Enter"
         color:"#757575"
     }
+} */
 
-    TextInput {
+
+TextField {
         id: tagInput
-        anchors.fill: parent
-        anchors.leftMargin: 10
-        anchors.rightMargin: 10
-        verticalAlignment: TextInput.AlignVCenter
+         width: 400
+        height: 40
+        anchors.top: tagContainer.bottom
+        anchors.topMargin: 20
+        anchors.horizontalCenter: parent.horizontalCenter
+        verticalAlignment: TextField.AlignVCenter
+        placeholderText: "Enter a tag and press Enter"
         font.pointSize: 12
         color: "#ffffff"
         selectionColor: "#2196f3"
         selectedTextColor: "#ffffff"
         onAccepted: addTag()
     }
-}
 Row{
-    anchors.top: tagInputRect.bottom
+    anchors.top: tagInput.bottom
      anchors.topMargin: 10
      anchors.horizontalCenter: parent.horizontalCenter
      spacing: 20

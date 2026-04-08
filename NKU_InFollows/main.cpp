@@ -24,7 +24,8 @@ int main(int argc, char *argv[])
     engine.load(QUrl(QStringLiteral("qrc:/qt/qml/nku_infollows/main.qml")));
 	engine.rootContext()->setContextProperty("appDirPath", QCoreApplication::applicationDirPath());
 	engine.rootContext()->setContextProperty("FileIO", &fileIO);
-	
+	engine.rootContext()->setContextProperty("maincfg", &maincfg);
+		
     if (engine.rootObjects().isEmpty())
         return -1;
 

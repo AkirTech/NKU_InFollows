@@ -9,6 +9,7 @@ ApplicationWindow {
     property int currentIndex: 0
     id: mainWindow
     Material.theme: Material.Dark
+    Material.accent: Material.Purple
     visible: true
     width: 768
     height: 512
@@ -22,11 +23,11 @@ ApplicationWindow {
 
     MyButton { 
         id : buttonnext
-        width:60
+        width:40
         height:40
         anchors.verticalCenter:parent.verticalCenter
         anchors.right: parent.right
-        anchors.rightMargin: 30
+        anchors.rightMargin: 15
         
         baseColor: "#1e1e1e"
         bordercolor: "#424242"
@@ -36,23 +37,28 @@ ApplicationWindow {
         text: ">"
         onClicked: {
             if (mainWindow.currentIndex === 0) {
-                stackView.push("Collect1.qml");
-                mainWindow.currentIndex  = 1;
+                stackView.push("aiInit.qml");
+                mainWindow.currentIndex  = mainWindow.currentIndex+1;
             } else if (mainWindow.currentIndex === 1) {
-                stackView.push("Settings.qml");
-                mainWindow.currentIndex = 2;
+                maincfg.set("ai_mode", mode_checkbox.checked ? "ollama" : "openai");
+                maincfg.set("api_url", api_url_field.text);
+                if (mode_checkbox2.checked) { 
+                    maincfg.set("api_key", api_key_field.text);
+                }
+                stackView.push("Collect1.qml");
+                mainWindow.currentIndex = mainWindow.currentIndex+1;
             }
         }
 
     }
     MyButton { 
         id : buttonback
-        width:60
+        width:40
         height:40
         visible: mainWindow.currentIndex > 0
         anchors.verticalCenter:parent.verticalCenter
         anchors.left: parent.left
-        anchors.leftMargin: 30
+        anchors.leftMargin: 15
         
         baseColor: "#1e1e1e"
         bordercolor: "#424242"

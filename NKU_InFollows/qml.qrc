@@ -1,5 +1,5 @@
 <RCC>
-    <qresource prefix="/qt/qml/nku_infollows">
+    <qresource prefix="/qt/qml/nku_infollows" lang="qml">
         <file>main.qml</file>
         <file>Greet.qml</file>
         <file>Collect1.qml</file>
@@ -7,5 +7,7 @@
         <file>Style.qml</file>
         <file>MyButton.qml</file>
         <file>NKU_InFollows_icon.png</file>
+        <file>aiInit.qml</file>
+        <file>Settings.qml</file>
     </qresource>
 </RCC>

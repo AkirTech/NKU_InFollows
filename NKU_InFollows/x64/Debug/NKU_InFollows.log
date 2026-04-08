@@ -1,4 +1,5 @@
 ﻿   Qt/MSBuild: 3.5.0.0
    Qt: 6.5.3
-  main.cpp
+  rcc qml.qrc
+  qrc_qml.cpp
   NKU_InFollows.vcxproj -> K:\InFollows\NKU_InFollows\x64\Debug\NKU_InFollows.exe
