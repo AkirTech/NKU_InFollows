@@ -4,14 +4,20 @@
 #include <QJsonObject>
 #include <QDebug>
 #include <QCoreApplication>
+#include <ctime>
+
+
+time_t currentTime = time(nullptr);
+
+QString defaultFilename = QString("/Userdata_%1.json").arg(currentTime);
 
 FileIO::FileIO(QObject* parent) : QObject(parent)
 {
 }
 
-void FileIO::save(const QString& jsonString,const QString& fileName = QString("/Userdata.json"))
+void FileIO::save(const QString& jsonString,const QString& fileName = defaultFilename)
 {
-    // ÕâÀïÖ¸¶¨±£´æÂ·¾¶£¬ÀýÈçÔÚÓ¦ÓÃ³ÌÐòÄ¿Â¼ÏÂµÄ data.json
+    // ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó¦ï¿½Ã³ï¿½ï¿½ï¿½Ä¿Â¼ï¿½Âµï¿½ data.json
     //QString filePath = QCoreApplication::applicationDirPath() + "/data.json";
     QString filePath = QCoreApplication::applicationDirPath() + fileName;
 
@@ -25,4 +31,19 @@ void FileIO::save(const QString& jsonString,const QString& fileName = QString("/
     file.write(jsonString.toUtf8());
     file.close();
     qDebug() << "[OK 200]:" << filePath;
+
+}
+
+QString FileIO::loadAsString(const QString& fileName)
+{
+    QString filePath = QCoreApplication::applicationDirPath() + fileName;
+    QFile file(filePath);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        qWarning()   << "[Internal Error 503]" << file.errorString();
+        return "";
+    }
+    QString String = QString::fromUtf8(file.readAll());
+    file.close();
+    qDebug() << "[OK 200] Loaded.";
+	return String;
 }

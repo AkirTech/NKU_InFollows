@@ -43,6 +43,12 @@
     <QtMoc Include="FileIO.h">
       <Filter>Source Files</Filter>
     </QtMoc>
+    <QtMoc Include="cfgLoader.cpp">
+      <Filter>Source Files</Filter>
+    </QtMoc>
+    <QtMoc Include="cfgLoader.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <QtTranslation Include="Translation_zh_Hans.ts">
@@ -78,5 +84,10 @@
     <ResourceCompile Include="NKU_InFollows.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="NKU_InFollows_icon.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

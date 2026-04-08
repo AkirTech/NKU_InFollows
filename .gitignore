@@ -7,6 +7,9 @@ x64/*
 .vs/
 .vscode/
 
+NKU_InFollows/x64/*
+
+
 #Git ignore file for NKU_InFollows/backend
 
 NKU_InFollows/backend/python-3.13.12-embed-amd64/*

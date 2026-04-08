@@ -3,6 +3,10 @@
 
 #include <QObject>
 #include <QString>
+#include <QFile>
+#include <QJsonObject>
+#include <QJsonDocument>
+#include <QJsonArray>
 
 class FileIO : public QObject
 {
@@ -11,6 +15,7 @@ public:
     explicit FileIO(QObject* parent = nullptr);
 
     Q_INVOKABLE void save(const QString& jsonString,const QString& fileName);
+	Q_INVOKABLE QString loadAsString(const QString& fileName);
 };
 
 #endif // FILEIO_H

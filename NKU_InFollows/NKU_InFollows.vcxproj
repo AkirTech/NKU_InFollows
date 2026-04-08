@@ -93,6 +93,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <QtMoc Include="cfgLoader.cpp">
+      <DynamicSource Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">input</DynamicSource>
+      <QtMocFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(Filename).moc</QtMocFileName>
+      <DynamicSource Condition="'$(Configuration)|$(Platform)'=='Release|x64'">input</DynamicSource>
+      <QtMocFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(Filename).moc</QtMocFileName>
+    </QtMoc>
     <ClCompile Include="FileIO.cpp" />
     <ClCompile Include="main.cpp" />
     <None Include="aiInit.qml" />
@@ -115,10 +121,14 @@
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="FileIO.h" />
+    <QtMoc Include="cfgLoader.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="NKU_InFollows.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="NKU_InFollows_icon.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">

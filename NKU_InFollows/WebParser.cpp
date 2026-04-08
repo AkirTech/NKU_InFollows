@@ -4,12 +4,14 @@
 #include <QtNetwork/QNetworkReply>
 #include <QUrl>
 #include <QDebug>
-#include <QEventLoop> // ����ͬ���ȴ�����ѡ��
+#include <QEventLoop> 
 #include <QByteArray>
 #include <QObject>
 #include <QMessageBox>
 #include <QString>
 #include <QJsonObject>
+#include <QJsonDocument>
+#include <QJsonArray>
 
 class WebParser : public QObject
 {
@@ -27,7 +29,7 @@ public:
         manager->get(request);
     }
 
-    void postRq(const QString &model ,const QString &u_msg,
+    QString postRq(const QString &model ,const QString &u_msg,
         const QString &s_msg,QUrl &baseUrl){
         /*Used for users.*/
         QJsonObject rqBody;
@@ -45,11 +47,13 @@ public:
         QByteArray jsonData = doc.toJson();
 
         QNetworkRequest rq(baseUrl);
-        manager->post(rq,jsonData);
-
+        QNetworkReply* reply = manager->post(rq,jsonData);
+        
+        QString res = reply->readAll();
+        return res;
     }
 
-    void postRq(const QString &model ,const QString &sys_prompt,
+    QString postRq(const QString &model ,const QString &sys_prompt,
             QUrl &baseUrl){
         /*Used for single time call*/
         QJsonObject rqBody;
@@ -61,14 +65,19 @@ public:
         sysp["content"] = sys_prompt;
 
         rqBody["messages"] = sysp;
-        QJsonDocument doc(rqBody);
+        QJsonDocument doc;
+		doc.setObject(rqBody);
         QByteArray jsonData = doc.toJson();
 
         QNetworkRequest rq(baseUrl);
-        manager->post(rq,jsonData);
+        
+		QNetworkReply* reply = manager->post(rq,jsonData);
+        QString res = reply->readAll();
+        return res;
+
     }
 
-    QjsonArray msgs();
+	QJsonArray msgs;
     
 
 private slots:
