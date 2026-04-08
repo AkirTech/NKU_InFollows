@@ -1,11 +1,11 @@
 <div align="center">
 <h1 >NKU_InFollows</h1>
-<p>下一代的信息整合终端。</p>
+<p>AI驱动的信息整合终端。</p>
   
 [![Static Badge](https://img.shields.io/badge/Github-repo-blue?style=for-the-badge&logo=github)](https://github.com/AkirTech/NKU_InFollows)
-![Static Badge](https://img.shields.io/badge/C%2B%2B-17-red?style=for-the-badge)
-[![Static Badge](https://img.shields.io/badge/Qt-6.5.3-brightgreen?style=for-the-badge)](https://www.qt.io/)
-[![Static Badge](https://img.shields.io/badge/Python-3.13-blue?style=for-the-badge&color=blue)](https://www.python.org/downloads/release/python-31313/)
+![Static Badge](https://img.shields.io/badge/C%2B%2B-17-red?style=for-the-badge&logo=cplusplus)
+[![Static Badge](https://img.shields.io/badge/Qt-6.5.3-brightgreen?style=for-the-badge&logo=qt)](https://www.qt.io/)
+[![Static Badge](https://img.shields.io/badge/Python-3.13-blue?style=for-the-badge&color=blue&logo=python)](https://www.python.org/downloads/release/python-31313/)
 
 </div>
 
