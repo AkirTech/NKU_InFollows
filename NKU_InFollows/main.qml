@@ -39,12 +39,18 @@ ApplicationWindow {
             if (mainWindow.currentIndex === 0) {
                 stackView.push("aiInit.qml");
                 mainWindow.currentIndex  = mainWindow.currentIndex+1;
-            } else if (mainWindow.currentIndex === 1) {
-                maincfg.set("ai_mode", mode_checkbox.checked ? "ollama" : "openai");
-                maincfg.set("api_url", api_url_field.text);
-                if (mode_checkbox2.checked) { 
-                    maincfg.set("api_key", api_key_field.text);
+            } 
+            else if (mainWindow.currentIndex === 1) {
+                try{
+                    maincfg.set("ai_mode", mode_checkbox.checked ? "ollama" : "openai");
+                    maincfg.set("api_url", api_url_field.text);
+                    if (mode_checkbox2.checked) { 
+                        maincfg.set("api_key", api_key_field.text);
+                    }}
+                catch(e){
+                    console.log(e);
                 }
+                
                 stackView.push("Collect1.qml");
                 mainWindow.currentIndex = mainWindow.currentIndex+1;
             }

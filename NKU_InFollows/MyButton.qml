@@ -27,6 +27,7 @@ Button {
     property color pressedColor: "#1769ab"
     property int textPointSize: 20
     property bool enableShadow: true
+
     // Fontsize
     background: Rectangle {
         id: mainBg
@@ -144,6 +145,7 @@ Button {
                 font.pointSize: control.textPointSize
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
+                
                 font.family: "Segoe UI"
                 opacity: control.pressed ? 0.5 : 0.8
             }

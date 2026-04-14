@@ -57,7 +57,6 @@ Rectangle {
 				placeholderText: mode_checkbox.checked ? "(default) http://localhost:11434/v1" : "Enter your OpenAI API key"
 				echoMode: TextInput.Normal
 				
-			}
 			Text {
 				text: "API key:"
 				visible: mode_checkbox2.checked
@@ -73,7 +72,8 @@ Rectangle {
 				placeholderText: "Enter your OpenAI API key"
 				echoMode: TextInput.Password
 			}
-
+			
+			}
 		}
 		
 }
