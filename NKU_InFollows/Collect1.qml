@@ -200,33 +200,50 @@ Row{
     }
 }
 
-function addTag() {
-    var text = tagInput.text.trim()
-    if (text !== "") {
-        tagModel.append({"text": text});
-        tagInput.text = "";
+MyButton {
+    id: nextButton
+    width: 40
+    height: 40
+    baseColor:"transparent"
+    bordercolor:"#ccc"
+    radius:20
+    text: "√"
+    anchors.right:parent.right  
+    anchors.rightMargin: 10
+    anchors.verticalCenter: parent.verticalCenter
+    onClicked: {
+        stackView.push("mpSource.qml");
     }
 }
-function saveTags() {
-    if (tagModel.count === 0) {
-        console.log("No tags to save.");
-        return;
-    }
-    else{
-         var jsonString = modelToJson(tagModel);
-         FileIO.save(jsonString,"/u_interests.json")
-    
+
+    function addTag() {
+        var text = tagInput.text.trim()
+        if (text !== "") {
+            tagModel.append({"text": text});
+            tagInput.text = "";
         }
-}
-function modelToJson(model) {
-    var array = [];
-    for (var i = 0; i < model.count; i++) {
-        var item = model.get(i); // 返回 { role1: value1, role2: value2, ... }
-        // 如果需要，可以在这里添加额外的处理或过滤
-        console.log(item.text);
-        array.push(item.text);
     }
-    return JSON.stringify(array, null, 0);
-}
+    function saveTags() {
+        if (tagModel.count === 0) {
+            console.log("No tags to save.");
+            return;
+        }
+        else{
+            var jsonString = modelToJson(tagModel);
+            FileIO.save(jsonString,"/u_interests.json")
+            maincfg.set("OOBE","evaluate");
+        
+            }
+    }
+    function modelToJson(model) {
+        var array = [];
+        for (var i = 0; i < model.count; i++) {
+            var item = model.get(i); // 返回 { role1: value1, role2: value2, ... }
+            // 如果需要，可以在这里添加额外的处理或过滤
+            console.log(item.text);
+            array.push(item.text);
+        }
+        return JSON.stringify(array, null, 0);
+    }
 
 }

@@ -6,57 +6,184 @@ import QtQuick.Controls.Material
 
 Rectangle {
 	id: mainrect
-	width: 640
-	height: 480
+	parent:mainWindow
+    anchors.margins:30
+    anchors.horizontalCenter:parent.horizontalCenter
 	color: "transparent"
-    Column {
-        anchors.centerIn: parent
+    
+    ListModel {
+        id: mp_sources
+        
+    }
+
+
+    ColumnLayout {
+        id: mainLayout
+        anchors.fill: parent
+        anchors.margins: 30
         spacing: 20
+
+        Text {
+            id: mpmode
+            text: "Service mode"
+            font.pointSize: 20
+            font.weight: Font.Medium
+            color: "#e0e0e0"
+            Layout.alignment: Qt.AlignLeft
+        }
+        
+        RowLayout {
+            id: mpmode_row
+            spacing: 20
+            Layout.alignment: Qt.AlignLeft
+            
+            CheckBox {
+                id: mpmode_checkbox
+                text: "Local API"
+                checked: !mpmode_checkbox2.checked 
+            }
+            
+            CheckBox {
+                id: mpmode_checkbox2
+                text: "Remote API"
+                checked: !mpmode_checkbox.checked
+            }
+        }
+
         Text {
             text: "MP Source"
             font.pointSize: 20
             font.weight: Font.Medium
             color: "#e0e0e0"
+            Layout.alignment: Qt.AlignLeft
         }
-        Row {
+        
+        RowLayout {
             spacing: 20
+            Layout.alignment: Qt.AlignLeft
+            
             CheckBox {
-                id:nku_main
+                id: nku_main
                 text: "南开大学"
                 checked: true
             }
+            
             CheckBox {
-                id:nku_ty
+                id: nku_ty
                 text: "南开体育之声"
                 checked: true
             }
-            MyButton {
-                id: buttonnext
-                width:60
-                height:40
-                anchors.verticalCenter:parent.verticalCenter
-                anchors.right: parent.right
-                anchors.rightMargin: 15
-                font.underline: true
-                baseColor: "transparent"
-                bordercolor: "transparent"
-                textColor: '#2ea5ff'
-                textPointSize: 20
-                text: "add"
-                onClicked: {
-                    var nku_checked = nku_main.checked
-                    var nku_ty_checked = nku_ty.checked
+            
+            Item {
+                Layout.fillWidth: true
+            }
+            
+            Rectangle {
+                id: other_box
+                Layout.preferredHeight: 40
+                Layout.preferredWidth: 300
+                color: "transparent"
+                
+                RowLayout {
+                    anchors.fill: parent
+                    spacing: 10
                     
-                    if(nku_checked) {
-                        nku_main.checked = false
+
+                    TextField {
+                        id: other_input
+                        Layout.fillWidth: true
+                        font.pointSize: 14
+                        placeholderText: "Enter other source"
                     }
-                    if(nku_ty_checked) {
-                        nku_ty.checked = false
+                    MyButton {
+                        id: buttonadd
+                        width: 60
+                        height: 20
+                        font.underline: true
+                        baseColor: "transparent"
+                        bordercolor: "transparent"
+                        textColor: '#2ea5ff'
+                        textPointSize: 12
+                        text: "add"
+                        onClicked: {
+                            if (other_input.text.length > 0) {
+                                var txt = other_input.text.trim();
+                                var url = 
+                                if (txt.length > 0) {
+                                    webParser.getMPSearchRq();
+                                }
+                            }
+                            else{
+                                statustext.text = "Source cannot be empty.";
+                                other_input.forceActiveFocus();
+                            }
+                        }
                     }
-                    nku_main.checked = nku_checked
+                    
+                    
+                }
+
+            Text {
+                id:statustext
+                text:"Add more sources."  
+                font.pointSize: 12
+                color: "#e0e0e0"
+                Layout.alignment: Qt.AlignRight
                 }
             }
         }
-
+        
+        Item {
+            Layout.fillHeight: true
+        }
+        
+        RowLayout {
+            Layout.alignment: Qt.AlignCenter
+            spacing: 20
+            
+            MyButton {
+                id: backButton
+                width: 100
+                height: 40
+                
+                baseColor: "#1e1e1e"
+                bordercolor: "#424242"
+                textColor: "#e0e0e0"
+                textPointSize: 14
+                text: "Back"
+                
+                onClicked: {
+                    parent.parent.parent.stackView.pop();
+                }
+            }
+            
+            MyButton {
+                id: nextButton
+                width: 100
+                height: 40
+                
+                baseColor: "#2196f3"
+                bordercolor: "#2196f3"
+                textColor: "#ffffff"
+                textPointSize: 14
+                text: "Next"
+                
+                onClicked: {
+                    parent.parent.parent.stackView.push("Collect1.qml");
+                    maincfg.set("mp_mode", mpmode_checkbox.checked ? "local" : "remote");
+                }
+            }
+        }
+    }
+    
+    function update_mp_mode() {
+        if (mpmode_checkbox.checked){
+            maincfg.set("mp.mode", "local");
+        }
+        else{
+            maincfg.set("mp.mode", "remote");
+        }
     }
 }
+
+

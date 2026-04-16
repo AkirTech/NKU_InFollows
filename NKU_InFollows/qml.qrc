@@ -9,5 +9,8 @@
         <file>NKU_InFollows_icon.png</file>
         <file>aiInit.qml</file>
         <file>Settings.qml</file>
+        <file>Eula.qml</file>
+        <file>mpSource.qml</file>
+        <file>eula.txt</file>
     </qresource>
 </RCC>

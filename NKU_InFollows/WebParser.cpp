@@ -2,6 +2,7 @@
 #include <QtNetwork/QNetworkAccessManager>
 #include <QtNetwork/QNetworkRequest>
 #include <QtNetwork/QNetworkReply>
+#include <QNetworkCookie>
 #include <QUrl>
 #include <QDebug>
 #include <QEventLoop> 
@@ -29,7 +30,7 @@ public:
         manager->get(request);
     }
 
-    QString postRq(const QString &model ,const QString &u_msg,
+    QString postAIRq(const QString &model ,const QString &u_msg,
         const QString &s_msg,QUrl &baseUrl){
         /*Used for users.*/
         QJsonObject rqBody;
@@ -78,7 +79,20 @@ public:
     }
 
 	QJsonArray msgs;
-    
+    QJsonObject getMPSearchRq(const QString &search,const QUrl &Url,const QString access) {
+		QNetworkRequest rq(Url);
+        rq.setRawHeader("Authorization", "Bearer " + access.toUtf8());
+        rq.setRawHeader("accept", "application/json");
+        QNetworkReply* reply = manager->get(rq);
+        QJsonDocument res = QJsonDocument::fromJson(reply->readAll().data());
+		QJsonArray list = res.object().value("list").toArray();
+		QJsonObject firstItem = list.isEmpty() ? QJsonObject() : list.first().toObject();
+		return firstItem;
+
+    }
+    QJsonObject getMPSearchRq(const QString& search, const QString& Url, const QString access) {
+		return getMPSearchRq(search, QUrl(Url), access);
+    }
 
 private slots:
     QString onFinished(QNetworkReply* reply) {
@@ -98,5 +112,6 @@ private slots:
 
 private:
     QNetworkAccessManager* manager;
-
+	
+    
 };

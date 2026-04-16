@@ -35,15 +35,18 @@
     <ClCompile Include="FileIO.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="MyUtils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="cfgLoader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="WebParser.cpp">
       <Filter>Source Files</Filter>
     </QtMoc>
     <QtMoc Include="FileIO.h">
-      <Filter>Source Files</Filter>
-    </QtMoc>
-    <QtMoc Include="cfgLoader.cpp">
       <Filter>Source Files</Filter>
     </QtMoc>
     <QtMoc Include="cfgLoader.h">
@@ -74,9 +77,19 @@
     <None Include="aiInit.qml">
       <Filter>Source Files</Filter>
     </None>
+    <None Include="config.json" />
+    <None Include="mpSource.qml">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="Eula.qml">
+      <Filter>Source Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MyUtils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -89,5 +102,8 @@
     <Image Include="NKU_InFollows_icon.png">
       <Filter>Resource Files</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="eula.txt" />
   </ItemGroup>
 </Project>

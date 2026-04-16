@@ -1,4 +1,4 @@
-﻿import QtQuick 
+import QtQuick 
 import QtQuick.Window 
 import QtQuick.Controls 
 import QtQuick.Layouts 
@@ -7,8 +7,9 @@ import QtQuick.Controls.Material
 
 Rectangle {
     id: mainrect
+    parent: mainWindow
     width: 500
-    height: 300
+    height: 400
     radius: 20
     anchors.top:parent.top
     anchors.horizontalCenter:parent.horizontalCenter
@@ -205,6 +206,45 @@ Rectangle {
                 to: 0.5
                 duration: 2000
                 easing.type: Easing.InOutQuad
+            }
+        }
+    }
+    
+    Row {
+        anchors.top: subtitleText.bottom
+        anchors.topMargin: 50
+        anchors.horizontalCenter: parent.horizontalCenter
+        spacing: 30
+        
+        MyButton {
+            id: backButton
+            width: 100
+            height: 40
+            
+            baseColor: "transparent"
+            bordercolor: "#ccc"
+            textColor: "#ffffff"
+            textPointSize: 14
+            text: "Back"
+            
+            onClicked: {
+                stackView.pop();
+            }
+        }
+        
+        MyButton {
+            id: nextButton
+            width: 120
+            height: 40
+            
+            baseColor: "transparent"
+            bordercolor: "#ccc"
+            textColor: "#ffffff"
+            textPointSize: 14
+            text: "Get Started"
+            
+            onClicked: {
+                stackView.push("aiInit.qml");
             }
         }
     }

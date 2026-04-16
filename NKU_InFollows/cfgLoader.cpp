@@ -16,11 +16,11 @@ cfgLoader::cfgLoader(QString path) {
     }
 }
 
-QString cfgLoader::getCfg(const QString &key) {
+QString cfgLoader::get(const QString &key) {
     return mainObj[key].toString();
 }
 
-void cfgLoader::setCfg(const QString &key, const QString &value) {
+void cfgLoader::set(const QString &key, const QString &value) {
     mainObj[key] = value;
     QJsonDocument doc(mainObj);
     QByteArray data = doc.toJson();
