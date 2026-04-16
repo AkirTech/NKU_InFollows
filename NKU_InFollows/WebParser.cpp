@@ -13,105 +13,147 @@
 #include <QJsonObject>
 #include <QJsonDocument>
 #include <QJsonArray>
+#include "WebParser.h"
 
-class WebParser : public QObject
+
+WebParser::WebParser(QObject* parent) : QObject(parent)
 {
-    Q_OBJECT
-public:
-    WebParser(QObject* parent = nullptr) : QObject(parent)
-    {
-        manager = new QNetworkAccessManager(this);
-        connect(manager, &QNetworkAccessManager::finished,
-            this, &WebParser::onFinished);
-    }
+    manager = new QNetworkAccessManager(this);
+    connect(manager, &QNetworkAccessManager::finished,
+        this, &WebParser::onFinished);
+}
 
-    void fetchUrl(const QUrl& _url) {
-        QNetworkRequest request(_url);
-        manager->get(request);
-    }
+void WebParser::fetchUrl(const QUrl& _url) {
+    QNetworkRequest request(_url);
+    manager->get(request);
+}
 
-    QString postAIRq(const QString &model ,const QString &u_msg,
-        const QString &s_msg,QUrl &baseUrl){
-        /*Used for users.*/
-        QJsonObject rqBody;
-        rqBody["model"] = model;
-        rqBody["stream"] = false;
+QString WebParser::postAIRq(const QString &model ,const QString &u_msg,
+    const QString &s_msg,QUrl &baseUrl){
+    /*Used for users.*/
+    QJsonObject rqBody;
+    rqBody["model"] = model;
+    rqBody["stream"] = false;
 
-        QJsonObject this_u_msg;
-        this_u_msg["role"] = "user";
-        this_u_msg["content"]  = u_msg;
+    QJsonObject this_u_msg;
+    this_u_msg["role"] = "user";
+    this_u_msg["content"] = u_msg;
 
-        msgs.append(this_u_msg);
-        rqBody["messages"] = msgs;
+    msgs.append(this_u_msg);
+    rqBody["messages"] = msgs;
         
-        QJsonDocument doc(rqBody);
-        QByteArray jsonData = doc.toJson();
+    QJsonDocument doc(rqBody);
+    QByteArray jsonData = doc.toJson();
 
-        QNetworkRequest rq(baseUrl);
-        QNetworkReply* reply = manager->post(rq,jsonData);
+    QNetworkRequest rq(baseUrl);
+    rq.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    
+    QNetworkReply* reply = manager->post(rq, jsonData);
+    
+    // 等待网络请求完成
+    QEventLoop loop;
+    connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
+    loop.exec();
+    
+    QString res;
+    if (reply->error() == QNetworkReply::NoError) {
+        res = reply->readAll();
+    } else {
+        qDebug() << "Error in postAIRq:" << reply->errorString();
+        res = "{\"error\":\"" + reply->errorString() + "\"}";
+    }
+    
+    reply->deleteLater();
+    return res;
+}
+
+QString WebParser::postAIRq(const QString &model ,const QString &sys_prompt,
+        QUrl &baseUrl){
+    /*Used for single time call*/
+    QJsonObject rqBody;
+    rqBody["model"] = model;
+    rqBody["stream"] = false;
         
-        QString res = reply->readAll();
-        return res;
-    }
+    QJsonArray messages;
+    QJsonObject sysp;
+    sysp["role"] = "system";
+    sysp["content"] = sys_prompt;
+    messages.append(sysp);
 
-    QString postRq(const QString &model ,const QString &sys_prompt,
-            QUrl &baseUrl){
-        /*Used for single time call*/
-        QJsonObject rqBody;
-        rqBody["model"] = model;
-        rqBody["stream"] = false;
+    rqBody["messages"] = messages;
+    QJsonDocument doc(rqBody);
+    QByteArray jsonData = doc.toJson();
+
+    QNetworkRequest rq(baseUrl);
+    rq.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
         
-        QJsonObject sysp;
-        sysp["role"] = "system";
-        sysp["content"] = sys_prompt;
-
-        rqBody["messages"] = sysp;
-        QJsonDocument doc;
-		doc.setObject(rqBody);
-        QByteArray jsonData = doc.toJson();
-
-        QNetworkRequest rq(baseUrl);
-        
-		QNetworkReply* reply = manager->post(rq,jsonData);
-        QString res = reply->readAll();
-        return res;
-
+    QNetworkReply* reply = manager->post(rq, jsonData);
+    
+    // 等待网络请求完成
+    QEventLoop loop;
+    connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
+    loop.exec();
+    
+    QString res;
+    if (reply->error() == QNetworkReply::NoError) {
+        res = reply->readAll();
+    } else {
+        qDebug() << "Error in postAIRq:" << reply->errorString();
+        res = "{\"error\":\"" + reply->errorString() + "\"}";
     }
+    
+    reply->deleteLater();
+    return res;
 
-	QJsonArray msgs;
-    QJsonObject getMPSearchRq(const QString &search,const QUrl &Url,const QString access) {
-		QNetworkRequest rq(Url);
-        rq.setRawHeader("Authorization", "Bearer " + access.toUtf8());
-        rq.setRawHeader("accept", "application/json");
-        QNetworkReply* reply = manager->get(rq);
-        QJsonDocument res = QJsonDocument::fromJson(reply->readAll().data());
-		QJsonArray list = res.object().value("list").toArray();
-		QJsonObject firstItem = list.isEmpty() ? QJsonObject() : list.first().toObject();
-		return firstItem;
+}
 
-    }
-    QJsonObject getMPSearchRq(const QString& search, const QString& Url, const QString access) {
-		return getMPSearchRq(search, QUrl(Url), access);
-    }
-
-private slots:
-    QString onFinished(QNetworkReply* reply) {
-        if (reply->error() == QNetworkReply::NoError) {
-            QByteArray data = reply->readAll();
-            qDebug() << "Data:" << data;
-
-            return QString("OK");
+QJsonObject WebParser::getMPSearchRq(const QString &search, const QUrl &Url, const QString access) {
+    QNetworkRequest rq(Url);
+    rq.setRawHeader("Authorization", "Bearer " + access.toUtf8());
+    rq.setRawHeader("accept", "application/json");
+    
+    QNetworkReply* reply = manager->get(rq);
+    
+    // 等待网络请求完成
+    QEventLoop loop;
+    connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
+    loop.exec();
+    
+    QJsonObject result;
+    if (reply->error() == QNetworkReply::NoError) {
+        QByteArray data = reply->readAll();
+        QJsonDocument res = QJsonDocument::fromJson(data);
+        if (!res.isNull() && res.isObject()) {
+            QJsonArray list = res.object().value("list").toArray();
+            result = list.isEmpty() ? QJsonObject() : list.first().toObject();
+        } else {
+            qDebug() << "Error parsing JSON response";
         }
-        else {
-            qDebug() << "Error:" << reply->errorString();
-            return QString("Error");
-        }
-        if (reply->isFinished())
-        reply->deleteLater();
+    } else {
+        qDebug() << "Error in getMPSearchRq:" << reply->errorString();
     }
+    
+    reply->deleteLater();
+    return result;
 
-private:
-    QNetworkAccessManager* manager;
+}
+
+QJsonObject WebParser::getMPSearchRq(const QString& search, const QString& Url, const QString access) {
+    return getMPSearchRq(search, QUrl(Url), access);
+}
+
+QString WebParser::onFinished(QNetworkReply* reply) {
+    if (reply->error() == QNetworkReply::NoError) {
+        QByteArray data = reply->readAll();
+        qDebug() << "Data:" << data;
+    } else {
+        qDebug() << "Error:" << reply->errorString();
+    }
+    
+    reply->deleteLater();
+    return reply->error() == QNetworkReply::NoError ? "OK" : "Error";
+}
+
+
 	
     
-};

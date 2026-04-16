@@ -41,12 +41,18 @@ Rectangle {
                 id: mpmode_checkbox
                 text: "Local API"
                 checked: !mpmode_checkbox2.checked 
+                onCheckedChanged: {
+                    update_mp_mode();
+                }
             }
             
             CheckBox {
                 id: mpmode_checkbox2
                 text: "Remote API"
                 checked: !mpmode_checkbox.checked
+                onCheckedChanged: {
+                    update_mp_mode();
+                }
             }
         }
 
@@ -108,9 +114,9 @@ Rectangle {
                         onClicked: {
                             if (other_input.text.length > 0) {
                                 var txt = other_input.text.trim();
-                                var url = 
+                                var url = mpmode_checkbox.checked?"http://localhost:8080/":"";
                                 if (txt.length > 0) {
-                                    webParser.getMPSearchRq();
+                                    webParser.getMPSearchRq(txt,url,access);
                                 }
                             }
                             else{

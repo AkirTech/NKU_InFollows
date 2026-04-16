@@ -116,12 +116,12 @@
     <None Include="MyButton.qml" />
     <None Include="Settings.qml" />
     <None Include="Style.qml" />
-    <QtMoc Include="WebParser.cpp">
+    <ClCompile Include="WebParser.cpp">
       <DynamicSource Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">input</DynamicSource>
       <QtMocFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(Filename).moc</QtMocFileName>
       <DynamicSource Condition="'$(Configuration)|$(Platform)'=='Release|x64'">input</DynamicSource>
       <QtMocFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(Filename).moc</QtMocFileName>
-    </QtMoc>
+    </ClCompile>
     <QtRcc Include="qml.qrc" />
     <None Include="Collect1.qml" />
     <None Include="Greet.qml" />
@@ -131,6 +131,7 @@
     <QtTranslation Include="Translation_zh_Hans.ts" />
   </ItemGroup>
   <ItemGroup>
+    <QtMoc Include="WebParser.h" />
     <QtMoc Include="FileIO.h" />
     <QtMoc Include="cfgLoader.h" />
     <ClInclude Include="MyUtils.h" />

@@ -41,15 +41,18 @@
     <ClCompile Include="cfgLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="WebParser.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <QtMoc Include="WebParser.cpp">
-      <Filter>Source Files</Filter>
-    </QtMoc>
     <QtMoc Include="FileIO.h">
       <Filter>Source Files</Filter>
     </QtMoc>
     <QtMoc Include="cfgLoader.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="WebParser.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>

@@ -5,7 +5,7 @@
 #include <qdebug.h>
 #include "fileio.h"
 #include "cfgLoader.h"
-#include "WebParser.cpp"
+#include "WebParser.h"
 #include <QProcessEnvironment>
 
 
