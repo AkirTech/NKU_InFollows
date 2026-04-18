@@ -59,7 +59,7 @@ Rectangle {
 		// API 配置
 		Text {
 			text: "API url:"
-			font.pointSize: 14
+			font.pointSize: 12
 			font.weight: Font.Medium
 			color: "#e0e0e0"
 			Layout.alignment: Qt.AlignLeft
@@ -69,7 +69,7 @@ Rectangle {
 			id: api_url_field
 			Layout.fillWidth: true
 			Layout.maximumWidth: 400
-			font.pointSize: 14
+			font.pointSize: 12
 			placeholderText: mode_checkbox.checked ? "(default) http://localhost:11434/v1" : "Enter your OpenAI API key"
 			echoMode: TextInput.Normal
 			Layout.alignment: Qt.AlignLeft
@@ -78,7 +78,7 @@ Rectangle {
 		Text {
 			text: "API key:"
 			visible: mode_checkbox2.checked
-			font.pointSize: 14
+			font.pointSize: 12
 			font.weight: Font.Medium
 			color: "#e0e0e0"
 			Layout.alignment: Qt.AlignLeft
@@ -89,10 +89,18 @@ Rectangle {
 			visible: mode_checkbox2.checked
 			Layout.fillWidth: true
 			Layout.maximumWidth: 400
-			font.pointSize: 14
+			font.pointSize: 12
 			placeholderText: "Enter your OpenAI API key"
 			echoMode: TextInput.Password
 			Layout.alignment: Qt.AlignLeft
+		}
+
+		TextField {
+			id:ai_modelinput
+			visible:true
+			Layout.fillWidth: true
+			placeholderText: "Model (Input full name e.g. gpt-3.5-turbo)"
+			Layout.maximumWidth: 400
 		}
 		
 		Item {
@@ -115,7 +123,7 @@ Rectangle {
 				text: "Back"
 				
 				onClicked: {
-					parent.parent.parent.stackView.pop();
+					stackView.pop();
 				}
 			}
 			
@@ -132,10 +140,11 @@ Rectangle {
 				
 				onClicked: {
 					try{
-						maincfg.set("ai_mode", mode_checkbox.checked ? "ollama" : "openai");
-						maincfg.set("api_url", api_url_field.text);
+						maincfg.set("ai.mode", mode_checkbox.checked ? "ollama" : "openai");
+						maincfg.set("ai.url", api_url_field.text === "" ? "http://localhost:11434/v1" : api_url_field.text);
+						maincfg.set("ai.model", ai_modelinput.text);
 						if (mode_checkbox2.checked) { 
-							maincfg.set("api_key", api_key_field.text);
+							maincfg.set("ai.api_key", api_key_field.text);
 						}
 					}
 					catch(e){

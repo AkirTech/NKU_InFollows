@@ -16,7 +16,7 @@
 #include "WebParser.h"
 
 
-WebParser::WebParser(QObject* parent) : QObject(parent)
+WebParser::WebParser(QObject* parent, cfgLoader* cfg) : QObject(parent), config(cfg)
 {
     manager = new QNetworkAccessManager(this);
     connect(manager, &QNetworkAccessManager::finished,
@@ -138,9 +138,59 @@ QJsonObject WebParser::getMPSearchRq(const QString &search, const QUrl &Url, con
 
 }
 
-QJsonObject WebParser::getMPSearchRq(const QString& search, const QString& Url, const QString access) {
+QJsonObject WebParser::getMPSearchRq(const QString& search, const QString& Url , const QString access) {
     return getMPSearchRq(search, QUrl(Url), access);
 }
+
+QString WebParser::we_login(const QUrl Url, const QString& username, const QString& password) {
+    QNetworkRequest rq(Url);
+    rq.setRawHeader("accept", "application/json");
+    rq.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
+
+    // 构建form-urlencoded格式的请求体
+    QByteArray postData;
+    postData.append("grant_type=password&");
+    postData.append("username=").append(QUrl::toPercentEncoding(username)).append("&");
+    postData.append("password=").append(QUrl::toPercentEncoding(password)).append("&");
+    postData.append("scope=&client_id=&client_secret=");
+
+    // 使用局部的QNetworkAccessManager，避免触发全局的onFinished槽函数
+    QNetworkAccessManager localManager;
+    QNetworkReply* reply = localManager.post(rq, postData);
+
+    QEventLoop loop;
+    connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
+    loop.exec();
+
+    QJsonObject result;
+    QString token;
+    if (reply->error() == QNetworkReply::NoError) {
+        QByteArray data = reply->readAll();
+        qDebug() << "Response data:" << data;
+        QJsonDocument res = QJsonDocument::fromJson(data);
+        if (!res.isNull() && res.isObject()) {
+            token = res.object().value("access_token").toString();
+            if (!token.isEmpty()) {
+                if (config) { // 添加空指针检查
+                    config->set("mp.access_token", token);
+                }
+                qDebug() << "Login successful, token:" << token ;
+            } else {
+                qDebug() << "Error: access_token not found in response";
+            }
+        }
+        else {
+            qDebug() << "Error parsing JSON response";
+        }
+    }
+    else {
+        qDebug() << "Error in we_login:" << reply->errorString();
+    }
+
+    reply->deleteLater();
+    return token;
+}
+
 
 QString WebParser::onFinished(QNetworkReply* reply) {
     if (reply->error() == QNetworkReply::NoError) {
@@ -154,6 +204,9 @@ QString WebParser::onFinished(QNetworkReply* reply) {
     return reply->error() == QNetworkReply::NoError ? "OK" : "Error";
 }
 
-
+static QByteArray jsonToByteArray(const QJsonObject& json) {
+    QJsonDocument doc(json);
+    return doc.toJson();
+}
 	
     

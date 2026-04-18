@@ -16,7 +16,7 @@ static const QString pageURLs[50] {
     QStringLiteral("qrc:/qt/qml/nku_infollows/mpSource.qml"),
     QStringLiteral("qrc:/qt/qml/nku_infollows/Greet.qml"),
 	QStringLiteral("qrc:/qt/qml/nku_infollows/Collect1.qml"),
-	QStringLiteral("qrc:/qt/qml/nku_infollows/finish .qml"),
+	QStringLiteral("qrc:/qt/qml/nku_infollows/finish.qml"),
 };
 
 int main(int argc, char *argv[])
@@ -29,10 +29,26 @@ int main(int argc, char *argv[])
 
     QGuiApplication app(argc, argv);
     cfgLoader maincfg("config.json");
-	WebParser webParser;
+	WebParser webParser(nullptr, &maincfg);
     maincfg.set("appDirPath", QCoreApplication::applicationDirPath());
 	FileIO fileIO;
-
+	QString mp_status = maincfg.get("mp.mode");
+    if (mp_status == QStringLiteral("local")) {
+        try {
+			qDebug() << "Initializing local mp server...";
+			QString mp_username = maincfg.get("username");
+			QString mp_pwd = maincfg.get("mp.password");
+            QString pwd = (mp_pwd == QString("")) ? QString("admin@123") : mp_pwd;
+            QUrl mp_rq_url = QUrl(maincfg.get("mp.url") + QString("/auth/token"));
+			QString token = webParser.we_login(mp_rq_url,
+                mp_username, pwd);
+        }
+        catch (const std::exception& e) {
+            qDebug() << "Error initializing local mp server,escaping.";
+            // QMessageBox::critical(nullptr, "Error", "Failed to initialize local model. Please check the configuration and try again.");
+            
+		}
+    }
     QString status = maincfg.get("OOBE");
     
 	app.setWindowIcon(QIcon(QCoreApplication::applicationDirPath() + "/NKU_InFollows_icon.png"));
@@ -66,6 +82,7 @@ int main(int argc, char *argv[])
 	engine.rootContext()->setContextProperty("FileIO", &fileIO);
 	engine.rootContext()->setContextProperty("maincfg", &maincfg);
 	engine.rootContext()->setContextProperty("webParser", &webParser);
+    engine.rootContext()->setContextProperty("username", username);
 		
     if (engine.rootObjects().isEmpty())
         return -1;

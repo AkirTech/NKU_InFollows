@@ -14,25 +14,29 @@
 #include <QJsonObject>
 #include <QJsonDocument>
 #include <QJsonArray>
+#include "cfgLoader.h"
 
 
 class WebParser : public QObject
 {
 	Q_OBJECT
 public:
-	WebParser(QObject* parent = nullptr);
+	WebParser(QObject* parent = nullptr, cfgLoader *cfg = nullptr);
+	
 	void fetchUrl(const QUrl& _url);
-	QString postAIRq(const QString& model, const QString& u_msg,
+	Q_INVOKABLE QString postAIRq(const QString& model, const QString& u_msg,
 		const QString& s_msg, QUrl& baseUrl);
-	QString postAIRq(const QString& model, const QString& sys_prompt,
+	Q_INVOKABLE QString postAIRq(const QString& model, const QString& sys_prompt,
 		QUrl& baseUrl);
 	QJsonArray msgs;
-	QJsonObject getMPSearchRq(const QString& search, const QUrl& Url, const QString access);
-	QJsonObject getMPSearchRq(const QString& search, const QString& Url, const QString access);
+	Q_INVOKABLE QJsonObject getMPSearchRq(const QString& search, const QUrl& Url, const QString access);
+	Q_INVOKABLE QJsonObject getMPSearchRq(const QString& search, const QString& Url, const QString access);
+	Q_INVOKABLE QString we_login(const QUrl Url,const QString& username, const QString& password);
 
 private slots:
-	QString onFinished(QNetworkReply* reply);
+	Q_INVOKABLE QString onFinished(QNetworkReply* reply);
 
 private:
 	QNetworkAccessManager* manager;
+	cfgLoader *config;
 };

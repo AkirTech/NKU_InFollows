@@ -40,19 +40,23 @@ Rectangle {
             CheckBox {
                 id: mpmode_checkbox
                 text: "Local API"
-                checked: !mpmode_checkbox2.checked 
+                checked: true //!mpmode_checkbox2.checked 
                 onCheckedChanged: {
                     update_mp_mode();
                 }
+                checkable:false
             }
             
             CheckBox {
                 id: mpmode_checkbox2
-                text: "Remote API"
-                checked: !mpmode_checkbox.checked
+                text: "Remote API (Currently unsupported.)"
+                checked: false //!mpmode_checkbox.checked
+                
                 onCheckedChanged: {
                     update_mp_mode();
                 }
+                checkable:false
+                
             }
         }
 
@@ -114,8 +118,8 @@ Rectangle {
                         onClicked: {
                             if (other_input.text.length > 0) {
                                 var txt = other_input.text.trim();
-                                var url = mpmode_checkbox.checked?"http://localhost:8080/":"";
-                                if (txt.length > 0) {
+                                var url = mpmode_checkbox.checked?"":"";
+                                if (txt.length > 0 && url != "") {
                                     webParser.getMPSearchRq(txt,url,access);
                                 }
                             }
@@ -131,6 +135,8 @@ Rectangle {
 
             Text {
                 id:statustext
+                anchors.top : other_box.bottom
+                anchors.topMargin: 20
                 text:"Add more sources."  
                 font.pointSize: 12
                 color: "#e0e0e0"
@@ -189,6 +195,14 @@ Rectangle {
         else{
             maincfg.set("mp.mode", "remote");
         }
+    }
+    function mpBackendlogin(){
+        var defaultpwd = maincfg.get("mp.pwd");
+        if (defaultpwd == ""){
+            defaultpwd = "admin@123";
+        }
+        var access = webParser.we_login(username,defaultpwd);
+        maincfg.set("mp.access", access);
     }
 }
 

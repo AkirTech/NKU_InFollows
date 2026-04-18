@@ -205,7 +205,10 @@ MyButton {
     width: 40
     height: 40
     baseColor:"transparent"
-    bordercolor:"#ccc"
+    textColor:"#2196f3"
+    bordercolor:"#2196f3"
+    textLeftMargin:5
+    textRightMargin:5
     radius:20
     text: "√"
     anchors.right:parent.right  

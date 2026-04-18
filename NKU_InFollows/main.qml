@@ -10,8 +10,8 @@ ApplicationWindow {
     Material.theme: Material.Dark
     Material.accent: Material.Purple
     visible: true
-    width: 768
-    height: 512
+    width: 986
+    height: 768
     title: "NKU_InFollows"
     color: "#121212"
     StackView {
