@@ -12,13 +12,19 @@ NKU InFollows grants you a personal, non-exclusive, non-transferable, limited li
 
 You may not:
 - Modify, adapt, or reverse engineer the software
-- Distribute, sublicense, or rent the software
+- Redistribute, sublicense, or rent the software
 - Use the software for commercial purposes
 - Remove or alter any copyright or trademark notices
 
 4. Privacy
 
 NKU InFollows collects and processes certain information as described in our Privacy Policy. By using the software, you consent to such collection and processing.
+
+We will collect the following information:
+- Your personal interests
+- Your API key, which is used for AI inference ( If you choose to use remote AI services ).
+- Your Wexin mp token
+- Your system username
 
 5. Disclaimer of Warranties
 
@@ -42,6 +48,6 @@ NKU InFollows may update this EULA from time to time. You will be notified of an
 
 10. Contact Information
 
-If you have any questions about this EULA, please contact us at support@nku-infollows.edu.cn.
+If you have any questions about this EULA, please contact us via 2514011@mail.nankai.edu.cn.
 
 © 2026 NKU InFollows. All rights reserved.
