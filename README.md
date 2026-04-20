@@ -6,7 +6,7 @@
 ![Static Badge](https://img.shields.io/badge/C%2B%2B-17-red?style=for-the-badge&logo=cplusplus)
 [![Static Badge](https://img.shields.io/badge/Qt-6.5.3-brightgreen?style=for-the-badge&logo=qt)](https://www.qt.io/)
 [![Static Badge](https://img.shields.io/badge/Python-3.13-blue?style=for-the-badge&color=blue&logo=python)](https://www.python.org/downloads/release/python-31313/)
-[![Static Badge](https://custom-icon-badges.demolab.com/badge/NKU_CPP-PROJECT-purple?style=for-the-badge&logo=nkucs)]("https://www.nankai.edu.cn")
+[![Static Badge](https://custom-icon-badges.demolab.com/badge/NKU_CPP-PROJECT-purple?style=for-the-badge&logo=nkucs)](https://www.nankai.edu.cn)
 </div>
 
 欢迎来到 `NKU_InFollows` 项目！
