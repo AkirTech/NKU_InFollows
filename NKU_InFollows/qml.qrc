@@ -1,5 +1,5 @@
 <RCC>
-    <qresource prefix="/qt/qml/nku_infollows" lang="qml">
+    <qresource lang="qml" prefix="/qt/qml/nku_infollows">
         <file>main.qml</file>
         <file>Greet.qml</file>
         <file>Collect1.qml</file>
@@ -12,5 +12,7 @@
         <file>Eula.qml</file>
         <file>mpSource.qml</file>
         <file>eula.txt</file>
+        <file>finish.qml</file>
+        <file>res/media/check-circle.svg</file>
     </qresource>
 </RCC>

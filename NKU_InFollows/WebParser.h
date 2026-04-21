@@ -16,6 +16,8 @@
 #include <QJsonArray>
 #include "cfgLoader.h"
 
+#include <libs/cpp-base64-2.rc.08/base64.h>
+
 
 class WebParser : public QObject
 {
@@ -32,7 +34,7 @@ public:
 	Q_INVOKABLE QJsonObject getMPSearchRq(const QString& search, const QUrl& Url, const QString access);
 	Q_INVOKABLE QJsonObject getMPSearchRq(const QString& search, const QString& Url, const QString access);
 	Q_INVOKABLE QString we_login(const QUrl Url,const QString& username, const QString& password);
-
+	
 private slots:
 	Q_INVOKABLE QString onFinished(QNetworkReply* reply);
 

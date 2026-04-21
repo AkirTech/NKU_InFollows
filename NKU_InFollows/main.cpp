@@ -62,7 +62,7 @@ int main(int argc, char *argv[])
 
     qDebug() << QStringLiteral("当前用户名:") << username;
 	maincfg.set("username", username);
-
+    
 
     QQmlApplicationEngine engine;
     if (status == QStringLiteral("fresh")){
@@ -83,7 +83,6 @@ int main(int argc, char *argv[])
 	engine.rootContext()->setContextProperty("maincfg", &maincfg);
 	engine.rootContext()->setContextProperty("webParser", &webParser);
     engine.rootContext()->setContextProperty("username", username);
-		
     if (engine.rootObjects().isEmpty())
         return -1;
 

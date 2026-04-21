@@ -112,6 +112,7 @@
     <None Include="aiInit.qml" />
     <None Include="config.json" />
     <None Include="Eula.qml" />
+    <None Include="finish.qml" />
     <None Include="mpSource.qml" />
     <None Include="MyButton.qml" />
     <None Include="Settings.qml" />

@@ -14,6 +14,7 @@
 #include <QJsonDocument>
 #include <QJsonArray>
 #include "WebParser.h"
+#include <libs/cpp-base64-2.rc.08/base64.h>
 
 
 WebParser::WebParser(QObject* parent, cfgLoader* cfg) : QObject(parent), config(cfg)
@@ -203,6 +204,8 @@ QString WebParser::onFinished(QNetworkReply* reply) {
     reply->deleteLater();
     return reply->error() == QNetworkReply::NoError ? "OK" : "Error";
 }
+
+
 
 static QByteArray jsonToByteArray(const QJsonObject& json) {
     QJsonDocument doc(json);

@@ -3,6 +3,7 @@ import QtQuick.Window
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Controls.Material
+import QtQuick.Dialogs
 
 Rectangle {
 	id: mainrect
@@ -15,7 +16,29 @@ Rectangle {
         id: mp_sources
         
     }
-
+    MessageDialog {
+            id: confirmcloseDialog
+            
+            title: "完成设置"
+            text: "软件即将重新启动以开始服务。"
+            buttons: MessageDialog.Ok
+            // 当用户点击按钮时触发
+            onAccepted: {
+                // 1. 动态加载第二个窗口的组件
+                    var component = Qt.createComponent("finish.qml")
+                    if (component.status === Component.Ready) {
+                        // 2. 创建新窗口对象
+                        var newWindow = component.createObject()
+                        // 3. 显示新窗口
+                        newWindow.show()
+                        // 4. 关闭当前窗口
+                        mainWindow.close()
+                    } else {
+                        console.error("加载 finish.qml 失败:", component.errorString())
+                    }
+            }
+            
+        }
 
     ColumnLayout {
         id: mainLayout
@@ -165,7 +188,7 @@ Rectangle {
                 text: "Back"
                 
                 onClicked: {
-                    parent.parent.parent.stackView.pop();
+                    stackView.pop();
                 }
             }
             
@@ -181,8 +204,10 @@ Rectangle {
                 text: "Next"
                 
                 onClicked: {
-                    parent.parent.parent.stackView.push("Collect1.qml");
+                    
                     maincfg.set("mp_mode", mpmode_checkbox.checked ? "local" : "remote");
+                    confirmcloseDialog.open();
+                    
                 }
             }
         }

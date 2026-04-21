@@ -1,12 +1,10 @@
-﻿// 例如，创建一个自定义样式的按钮组件 RoundedButton.qml
-import QtQuick
+﻿import QtQuick
 import QtQuick.Controls
 import QtQuick.Effects
 import QtQuick.Controls.Material
 
 Button {
     id: control
-    // 可以暴露一些可定制的属性
 
     property url iconSource: ""               // 图标文件路径 (SVG/PNG等)
     property int iconWidth: 24                 // 图标显示宽度
