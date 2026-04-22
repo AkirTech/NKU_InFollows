@@ -90,6 +90,9 @@
     <None Include="finish.qml">
       <Filter>Source Files</Filter>
     </None>
+    <None Include="qr_code.qml">
+      <Filter>Source Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">

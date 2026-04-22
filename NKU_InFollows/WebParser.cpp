@@ -144,6 +144,13 @@ QJsonObject WebParser::getMPSearchRq(const QString& search, const QString& Url ,
 }
 
 QString WebParser::we_login(const QUrl Url, const QString& username, const QString& password) {
+    
+	//check if currently have token
+    QString c_token = config->get("mp.access_token");
+    if (c_token != "") {
+		qDebug() << "Already have token, skipping mp backend login.";
+    }
+    
     QNetworkRequest rq(Url);
     rq.setRawHeader("accept", "application/json");
     rq.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
@@ -204,6 +211,64 @@ QString WebParser::onFinished(QNetworkReply* reply) {
     reply->deleteLater();
     return reply->error() == QNetworkReply::NoError ? "OK" : "Error";
 }
+
+QString WebParser::wxLoginGetQR(const QString &Url,const QString access) {
+	QNetworkAccessManager localManager;
+	QNetworkRequest rq(Url+ "/api/v1/wx/auth/qr/code");
+    ///api/v1/wx/auth/qr/code
+	rq.setRawHeader("accept", "application/json");
+	rq.setRawHeader("Authorization", QString("Bearer %1").arg(access).toUtf8());
+    QNetworkReply* reply =  localManager.get(rq);
+    QEventLoop loop;
+    connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
+	loop.exec();
+
+	QNetworkRequest rq2(Url+"/api/v1/wx/auth/qr/image");
+    rq2.setRawHeader("accept", "application/json");
+	rq2.setRawHeader("Authorization", QString("Bearer %1").arg(access).toUtf8());
+    QNetworkReply* reply2 =  localManager.get(rq2);
+    QEventLoop loop2;
+    connect(reply2, &QNetworkReply::finished, &loop2, &QEventLoop::quit);
+	loop2.exec();
+
+    QString 
+}
+
+QString WebParser::getLoginStatus(const QString &Url, const QString access) {
+	QNetworkAccessManager localManager;
+
+    QNetworkRequest rq(Url);
+    rq.setRawHeader("accept", "application/json");
+    rq.setHeader(QNetworkRequest::ContentTypeHeader, "application / x - www - form - urlencoded");
+    rq.setRawHeader("Authorization:", QString("Bearer %1").arg(access).toUtf8());
+    // /api/v1/wx/auth/qr/status  
+	
+	QNetworkReply* reply =  localManager.get(rq);
+
+    QEventLoop loop;
+    connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
+	loop.exec();
+
+	QString login_status; 
+    QString qrcode_status;
+    if (reply->error() == QNetworkReply::NoError) {
+        QByteArray data = reply->readAll();
+        qDebug() << "Response data:" << data;
+        QJsonDocument res = QJsonDocument::fromJson(data);
+        if (!res.isNull() && res.isObject()) {
+			QJsonObject returndata = res.object().value("data").toObject();
+            login_status = returndata.value("login_status").toString();
+            qDebug() << "Login status:" << login_status;
+        } else {
+            qDebug() << "Error parsing JSON response";
+        }
+    } else {
+        qDebug() << "Error in getLoginStatus:" << reply->errorString();
+	}
+
+    return login_status;
+}
+
 
 
 

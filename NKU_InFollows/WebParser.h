@@ -34,7 +34,9 @@ public:
 	Q_INVOKABLE QJsonObject getMPSearchRq(const QString& search, const QUrl& Url, const QString access);
 	Q_INVOKABLE QJsonObject getMPSearchRq(const QString& search, const QString& Url, const QString access);
 	Q_INVOKABLE QString we_login(const QUrl Url,const QString& username, const QString& password);
-	
+	Q_INVOKABLE QString getLoginStatus(const QString &Url, const QString access);
+	Q_INVOKABLE QString wxLoginGetQR(const QString& Url, const QString access);
+
 private slots:
 	Q_INVOKABLE QString onFinished(QNetworkReply* reply);
 

@@ -8,7 +8,7 @@ x64/*
 .vscode/
 
 NKU_InFollows/x64/*
-
+*.drawio.bkp
 
 #Git ignore file for NKU_InFollows/backend
 
