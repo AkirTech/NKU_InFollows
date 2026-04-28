@@ -15,5 +15,6 @@
         <file>finish.qml</file>
         <file>res/media/check-circle.svg</file>
         <file>qr_code.qml</file>
+        <file>wx_qrcode.png</file>
     </qresource>
 </RCC>

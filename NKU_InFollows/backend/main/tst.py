@@ -21,5 +21,24 @@ def test_rem_api():
     cookies = {"auth-key": "522f079173fb4a9db7da44f901d43be6"}
     print(rq.get(url, params=payload, cookies=cookies).json())
 
+def test_login():
+    url = "http://localhost:8001/api/v1/wx/auth/login"
+    payload = "grant_type=password&username=qige0&password=admin@123"
+    headers = {"Content-Type": "application/x-www-form-urlencoded"}
+    reply = rq.post(url, data=payload, headers=headers).json()
+    print(reply)
+    if reply["code"] == 0:
+        token = reply["data"]["access_token"]
+        print(token)
+    with open("token.txt", "w") as f:
+        f.write(token)
+
+def logout():
+    with open("token.txt", "r") as f:
+        token = f.read()
+    headers = {"Authorization": f"Bearer {token}"}
+    url = "http://localhost:8001/api/v1/wx/auth/logout"
+    print(rq.post(url, headers=headers))
+
 if __name__ == "__main__":
-    test_rem_api()
+    logout()

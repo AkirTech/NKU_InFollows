@@ -36,11 +36,20 @@ public:
 	Q_INVOKABLE QString we_login(const QUrl Url,const QString& username, const QString& password);
 	Q_INVOKABLE QString getLoginStatus(const QString &Url, const QString access);
 	Q_INVOKABLE QString wxLoginGetQR(const QString& Url, const QString access);
+	Q_INVOKABLE void wxLoginCheckLoop(const QString &Url, const QString access);
+signals:
+	void notice(const QString& message);
+	void loginSuccess();
 
-private slots:
-	Q_INVOKABLE QString onFinished(QNetworkReply* reply);
 
 private:
 	QNetworkAccessManager* manager;
-	cfgLoader *config;
+	cfgLoader* config;
+	QString m_checkUrl;
+	QString m_accessToken;
+	bool m_isLogin;
+private slots:
+	Q_INVOKABLE QString onFinished(QNetworkReply* reply);
+	void checkLoginStatus();
+
 };

@@ -1,10 +1,13 @@
 #include <QCoreApplication>
+#include <QTimer>
+#include <QThread>
 #include <QtNetwork/QNetworkAccessManager>
 #include <QtNetwork/QNetworkRequest>
 #include <QtNetwork/QNetworkReply>
 #include <QNetworkCookie>
 #include <QUrl>
 #include <QDebug>
+#include <qdebug.h>
 #include <QEventLoop> 
 #include <QByteArray>
 #include <QObject>
@@ -14,10 +17,9 @@
 #include <QJsonDocument>
 #include <QJsonArray>
 #include "WebParser.h"
-#include <libs/cpp-base64-2.rc.08/base64.h>
 
 
-WebParser::WebParser(QObject* parent, cfgLoader* cfg) : QObject(parent), config(cfg)
+WebParser::WebParser(QObject* parent, cfgLoader* cfg) : QObject(parent), config(cfg), m_isLogin(false)
 {
     manager = new QNetworkAccessManager(this);
     connect(manager, &QNetworkAccessManager::finished,
@@ -139,7 +141,7 @@ QJsonObject WebParser::getMPSearchRq(const QString &search, const QUrl &Url, con
 
 }
 
-QJsonObject WebParser::getMPSearchRq(const QString& search, const QString& Url , const QString access) {
+QJsonObject WebParser::getMPSearchRq(const QString& search, const QString& Url, const QString access) {
     return getMPSearchRq(search, QUrl(Url), access);
 }
 
@@ -212,7 +214,9 @@ QString WebParser::onFinished(QNetworkReply* reply) {
     return reply->error() == QNetworkReply::NoError ? "OK" : "Error";
 }
 
-QString WebParser::wxLoginGetQR(const QString &Url,const QString access) {
+QString WebParser::wxLoginGetQR(const QString &Url = "http://localhost:8001",const QString access = "") {
+	//请求二维码链接和状态
+
 	QNetworkAccessManager localManager;
 	QNetworkRequest rq(Url+ "/api/v1/wx/auth/qr/code");
     ///api/v1/wx/auth/qr/code
@@ -223,18 +227,39 @@ QString WebParser::wxLoginGetQR(const QString &Url,const QString access) {
     connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
 	loop.exec();
 
+    QThread::msleep(2000);
+    //获取二维码图片
 	QNetworkRequest rq2(Url+"/api/v1/wx/auth/qr/image");
     rq2.setRawHeader("accept", "application/json");
 	rq2.setRawHeader("Authorization", QString("Bearer %1").arg(access).toUtf8());
     QNetworkReply* reply2 =  localManager.get(rq2);
+
+    QThread::msleep(1000);
+
     QEventLoop loop2;
     connect(reply2, &QNetworkReply::finished, &loop2, &QEventLoop::quit);
 	loop2.exec();
-
-    QString 
+	//判断二维码状态，扫码进度
+    QJsonObject qr_status = QJsonDocument::fromJson(reply2->readAll()).object();
+    qDebug() << reply2->readAll();
+    
+    if (qr_status["data"].toBool() == true) {
+        try
+        {
+            system("copy //backend/we-mp-rss/static/wx_qrcode.png //wx_qrcode.png");
+        }
+        catch (const std::exception& e) {
+			qDebug() << "Error copying QR code image: " << e.what() << ". Please check if the file exists and try again.";
+        }
+        qDebug() << "Generated QR OK!";
+        return "生成成功";
+    }
+    else {
+        return "生成成功";
+    }
 }
 
-QString WebParser::getLoginStatus(const QString &Url, const QString access) {
+QString WebParser::getLoginStatus(const QString &Url= "http://localhost:8001", const QString access = "") {
 	QNetworkAccessManager localManager;
 
     QNetworkRequest rq(Url);
@@ -269,8 +294,32 @@ QString WebParser::getLoginStatus(const QString &Url, const QString access) {
     return login_status;
 }
 
+void WebParser::wxLoginCheckLoop(const QString &Url, const QString access) {
+    m_checkUrl = Url+"/api/v1/wx/auth/qr/status";
+    m_accessToken = access;
+    m_isLogin = false;
+    checkLoginStatus();
+}
 
-
+void WebParser::checkLoginStatus() {
+    QString status = getLoginStatus(m_checkUrl, m_accessToken);
+    
+    if (status == "success") {
+        m_isLogin = true;
+        emit loginSuccess();
+    } else if (status == "waiting") {
+        QTimer::singleShot(2000, this, &WebParser::checkLoginStatus);
+    } else if (status == "scanned") {
+        emit notice("已扫描，请在手机上确认登录");
+        QTimer::singleShot(2000, this, &WebParser::checkLoginStatus);
+    } else if (status == "expired") {
+        emit notice("二维码已过期，请重新获取");
+    } else if (status == "exists") {
+        return;
+    } else {
+        QTimer::singleShot(2000, this, &WebParser::checkLoginStatus);
+    }
+}
 
 static QByteArray jsonToByteArray(const QJsonObject& json) {
     QJsonDocument doc(json);

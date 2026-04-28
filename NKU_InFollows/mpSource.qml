@@ -221,13 +221,17 @@ Rectangle {
             maincfg.set("mp.mode", "remote");
         }
     }
+
+    //deprecated
     function mpBackendlogin(){
         var defaultpwd = maincfg.get("mp.pwd");
         if (defaultpwd == ""){
             defaultpwd = "admin@123";
         }
-        var access = webParser.we_login(username,defaultpwd);
-        maincfg.set("mp.access", access);
+        if (maincfg.get("mp.mode") == "local"){
+            var access = webParser.we_login("http://localhost:8001/api/v1/wx/auth/login",username,defaultpwd);
+            maincfg.set("mp.access", access);
+        }
     }
 }
 

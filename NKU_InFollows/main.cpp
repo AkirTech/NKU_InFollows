@@ -42,6 +42,7 @@ int main(int argc, char *argv[])
             QUrl mp_rq_url = QUrl(maincfg.get("mp.url") + QString("/auth/token"));
 			QString token = webParser.we_login(mp_rq_url,
                 mp_username, pwd);
+            maincfg.set("mp.access_token",token);
         }
         catch (const std::exception& e) {
             qDebug() << "Error initializing local mp server,escaping.";
@@ -83,6 +84,7 @@ int main(int argc, char *argv[])
 	engine.rootContext()->setContextProperty("maincfg", &maincfg);
 	engine.rootContext()->setContextProperty("webParser", &webParser);
     engine.rootContext()->setContextProperty("username", username);
+    engine.rootContext()->setContextProperty("mptoken", maincfg.get("mp.access_token"));
     if (engine.rootObjects().isEmpty())
         return -1;
 
