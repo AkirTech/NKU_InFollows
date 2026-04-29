@@ -1,14 +1,18 @@
 import QtQuick 
 import QtQuick.Window 
 import QtQuick.Controls
-import QtQuick.Shapes
 import QtQuick.Controls.Material
+import QtQuick.Layouts
 
-Rectangle {
+Window {
     id: root
-    width: parent.width
-    height: parent.height
-    color: "#f5f7fa"
+    width: 1100
+    height: 800
+    title: "设置"
+    visible: false
+    Material.theme: Material.Dark
+    Material.accent: Material.Purple
+    color: "#121212"
     
     property int selectedIndex: 0
     
@@ -20,16 +24,7 @@ Rectangle {
             id: leftPanel
             Layout.preferredWidth: 250
             Layout.fillHeight: true
-            color: "#ffffff"
-            
-            layer.enabled: true
-            layer.effect: MultiEffect {
-                shadowEnabled: true
-                shadowColor: "#20000000"
-                shadowBlur: 0.3
-                shadowHorizontalOffset: 2
-                autoPaddingEnabled: true
-            }
+            color: "#1e1e1e"
             
             ColumnLayout {
                 anchors.fill: parent
@@ -40,7 +35,7 @@ Rectangle {
                     text: "设置"
                     font.pointSize: 24
                     font.weight: Font.Bold
-                    color: "#2c3e50"
+                    color: "#ffffff"
                     Layout.alignment: Qt.AlignLeft
                     Layout.bottomMargin: 20
                 }
@@ -60,24 +55,14 @@ Rectangle {
                             description: "基本应用设置"
                         }
                         ListElement {
-                            name: "外观设置"
-                            icon: "🎨"
-                            description: "主题和界面样式"
+                            name: "公众号设置"
+                            icon: "📱"
+                            description: "公众号配置"
                         }
                         ListElement {
-                            name: "通知设置"
-                            icon: "🔔"
-                            description: "消息和提醒配置"
-                        }
-                        ListElement {
-                            name: "隐私设置"
-                            icon: "🔒"
-                            description: "数据和安全选项"
-                        }
-                        ListElement {
-                            name: "账户设置"
-                            icon: "👤"
-                            description: "用户账户管理"
+                            name: "AI 设置"
+                            icon: "🤖"
+                            description: "AI 服务配置"
                         }
                         ListElement {
                             name: "关于"
@@ -90,21 +75,13 @@ Rectangle {
                         width: settingsList.width
                         height: 60
                         radius: 12
-                        color: index === root.selectedIndex ? "#e3f2fd" : "transparent"
+                        color: index === root.selectedIndex ? "#6200ee" : "transparent"
                         
                         Behavior on color {
                             ColorAnimation {
                                 duration: 200
                                 easing.type: Easing.InOutQuad
                             }
-                        }
-                        
-                        Rectangle {
-                            anchors.fill: parent
-                            radius: 12
-                            color: "transparent"
-                            border.width: index === root.selectedIndex ? 2 : 0
-                            border.color: "#2196f3"
                         }
                         
                         RowLayout {
@@ -126,14 +103,14 @@ Rectangle {
                                     text: name
                                     font.pointSize: 14
                                     font.weight: index === root.selectedIndex ? Font.Bold : Font.Normal
-                                    color: index === root.selectedIndex ? "#1976d2" : "#34495e"
+                                    color: index === root.selectedIndex ? "#ffffff" : "#bbbbbb"
                                     Layout.fillWidth: true
                                 }
                                 
                                 Text {
                                     text: description
                                     font.pointSize: 10
-                                    color: "#95a5a6"
+                                    color: "#888888"
                                     Layout.fillWidth: true
                                 }
                             }
@@ -150,7 +127,7 @@ Rectangle {
                             
                             onEntered: {
                                 if (index !== root.selectedIndex) {
-                                    parent.color = "#f8f9fa"
+                                    parent.color = "#333333"
                                 }
                             }
                             
@@ -169,62 +146,42 @@ Rectangle {
             id: rightPanel
             Layout.fillWidth: true
             Layout.fillHeight: true
-            color: "#ffffff"
+            color: "#242424"
             
-            layer.enabled: true
-            layer.effect: MultiEffect {
-                shadowEnabled: true
-                shadowColor: "#20000000"
-                shadowBlur: 0.3
-                shadowHorizontalOffset: -2
-                autoPaddingEnabled: true
-            }
-            
-            ScrollView {
+            ColumnLayout {
                 anchors.fill: parent
                 anchors.margins: 30
-                clip: true
+                spacing: 20
                 
-                ColumnLayout {
-                    width: parent.width
-                    spacing: 20
+                Text {
+                    id: titleText
+                    text: settingsModel.get(root.selectedIndex).name
+                    font.pointSize: 28
+                    font.weight: Font.Bold
+                    color: "#ffffff"
+                    Layout.alignment: Qt.AlignLeft
+                }
+                
+                Rectangle {
+                    Layout.fillWidth: true
+                    height: 1
+                    color: "#333333"
+                    Layout.bottomMargin: 10
+                }
+                
+                Loader {
+                    id: contentLoader
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
                     
-                    Text {
-                        id: titleText
-                        text: settingsModel.get(root.selectedIndex).name
-                        font.pointSize: 28
-                        font.weight: Font.Bold
-                        color: "#2c3e50"
-                        Layout.alignment: Qt.AlignLeft
-                    }
-                    
-                    Rectangle {
-                        Layout.fillWidth: true
-                        height: 2
-                        color: "#e0e0e0"
-                        Layout.bottomMargin: 20
-                    }
-                    
-                    Loader {
-                        id: contentLoader
-                        Layout.fillWidth: true
-                        Layout.preferredHeight: implicitHeight
-                        
-                        sourceComponent: {
-                            switch(root.selectedIndex) {
-                                case 0: return generalSettingsComponent
-                                case 1: return appearanceSettingsComponent
-                                case 2: return notificationSettingsComponent
-                                case 3: return privacySettingsComponent
-                                case 4: return accountSettingsComponent
-                                case 5: return aboutComponent
-                                default: return generalSettingsComponent
-                            }
+                    sourceComponent: {
+                        switch(root.selectedIndex) {
+                            case 0: return generalSettingsComponent
+                            case 1: return mpSettingsComponent
+                            case 2: return aiSettingsComponent
+                            case 3: return aboutComponent
+                            default: return generalSettingsComponent
                         }
-                    }
-                    
-                    Item {
-                        Layout.fillHeight: true
                     }
                 }
             }
@@ -235,412 +192,467 @@ Rectangle {
         id: generalSettingsComponent
         
         ColumnLayout {
-            width: parent.width
+            Layout.fillWidth: true
             spacing: 15
             
-            Repeater {
-                model: [
-                    { title: "启动时自动运行", description: "应用启动时自动打开" },
-                    { title: "最小化到托盘", description: "关闭时最小化到系统托盘" },
-                    { title: "开机自启动", description: "系统启动时自动运行应用" }
-                ]
-                
-                delegate: Rectangle {
-                    Layout.fillWidth: true
-                    height: 70
-                    radius: 10
-                    color: "#f8f9fa"
-                    
-                    RowLayout {
-                        anchors.fill: parent
-                        anchors.margins: 15
-                        spacing: 15
-                        
-                        ColumnLayout {
-                            Layout.fillWidth: true
-                            spacing: 5
-                            
-                            Text {
-                                text: modelData.title
-                                font.pointSize: 14
-                                font.weight: Font.Medium
-                                color: "#2c3e50"
-                            }
-                            
-                            Text {
-                                text: modelData.description
-                                font.pointSize: 11
-                                color: "#7f8c8d"
-                            }
-                        }
-                        
-                        Rectangle {
-                            width: 50
-                            height: 26
-                            radius: 13
-                            color: "#2196f3"
-                            
-                            Rectangle {
-                                width: 22
-                                height: 22
-                                radius: 11
-                                color: "#ffffff"
-                                anchors.right: parent.right
-                                anchors.rightMargin: 2
-                                anchors.verticalCenter: parent.verticalCenter
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-    
-    Component {
-        id: appearanceSettingsComponent
-        
-        ColumnLayout {
-            width: parent.width
-            spacing: 20
-            
             Text {
-                text: "主题选择"
+                text: "基本信息"
                 font.pointSize: 16
-                font.weight: Font.Medium
-                color: "#2c3e50"
+                font.weight: Font.Bold
+                color: "#ffffff"
                 Layout.alignment: Qt.AlignLeft
-            }
-            
-            Row {
-                spacing: 15
-                
-                Repeater {
-                    model: [
-                        { name: "浅色", color: "#ffffff", border: "#e0e0e0" },
-                        { name: "深色", color: "#2c3e50", border: "#34495e" },
-                        { name: "自动", color: "#f5f7fa", border: "#bdc3c7" }
-                    ]
-                    
-                    delegate: Rectangle {
-                        width: 100
-                        height: 100
-                        radius: 12
-                        color: modelData.color
-                        border.width: 3
-                        border.color: modelData.border
-                        
-                        ColumnLayout {
-                            anchors.centerIn: parent
-                            spacing: 8
-                            
-                            Rectangle {
-                                width: 40
-                                height: 40
-                                radius: 20
-                                color: modelData.color === "#ffffff" ? "#e0e0e0" : "#ffffff"
-                                opacity: 0.3
-                                Layout.alignment: Qt.AlignHCenter
-                            }
-                            
-                            Text {
-                                text: modelData.name
-                                font.pointSize: 12
-                                color: modelData.color === "#ffffff" ? "#2c3e50" : "#ffffff"
-                                Layout.alignment: Qt.AlignHCenter
-                            }
-                        }
-                    }
-                }
-            }
-            
-            Text {
-                text: "字体大小"
-                font.pointSize: 16
-                font.weight: Font.Medium
-                color: "#2c3e50"
-                Layout.alignment: Qt.AlignLeft
-                Layout.topMargin: 20
+                Layout.bottomMargin: 10
             }
             
             Rectangle {
                 Layout.fillWidth: true
-                height: 50
+                height: 60
                 radius: 8
-                color: "#f8f9fa"
+                color: "#2d2d2d"
                 
                 RowLayout {
                     anchors.fill: parent
                     anchors.margins: 15
-                    spacing: 10
+                    spacing: 15
                     
                     Text {
-                        text: "小"
-                        font.pointSize: 12
-                        color: "#7f8c8d"
+                        text: "用户名"
+                        font.pointSize: 14
+                        font.weight: Font.Medium
+                        color: "#cccccc"
                     }
                     
-                    Rectangle {
+                    Text {
+                        text: maincfg.get("username")
+                        font.pointSize: 14
+                        color: "#ffffff"
                         Layout.fillWidth: true
-                        height: 4
-                        radius: 2
-                        color: "#e0e0e0"
-                        
-                        Rectangle {
-                            width: parent.width * 0.5
-                            height: parent.height
-                            radius: 2
-                            color: "#2196f3"
-                        }
-                    }
-                    
-                    Text {
-                        text: "大"
-                        font.pointSize: 12
-                        color: "#7f8c8d"
                     }
                 }
             }
-        }
-    }
-    
-    Component {
-        id: notificationSettingsComponent
-        
-        ColumnLayout {
-            width: parent.width
-            spacing: 15
-            
-            Repeater {
-                model: [
-                    { title: "桌面通知", description: "在桌面显示通知弹窗" },
-                    { title: "声音提醒", description: "播放通知提示音" },
-                    { title: "邮件通知", description: "发送邮件通知" },
-                    { title: "震动提醒", description: "设备震动提醒" }
-                ]
-                
-                delegate: Rectangle {
-                    Layout.fillWidth: true
-                    height: 70
-                    radius: 10
-                    color: "#f8f9fa"
-                    
-                    RowLayout {
-                        anchors.fill: parent
-                        anchors.margins: 15
-                        spacing: 15
-                        
-                        ColumnLayout {
-                            Layout.fillWidth: true
-                            spacing: 5
-                            
-                            Text {
-                                text: modelData.title
-                                font.pointSize: 14
-                                font.weight: Font.Medium
-                                color: "#2c3e50"
-                            }
-                            
-                            Text {
-                                text: modelData.description
-                                font.pointSize: 11
-                                color: "#7f8c8d"
-                            }
-                        }
-                        
-                        Rectangle {
-                            width: 50
-                            height: 26
-                            radius: 13
-                            color: index % 2 === 0 ? "#2196f3" : "#bdc3c7"
-                            
-                            Rectangle {
-                                width: 22
-                                height: 22
-                                radius: 11
-                                color: "#ffffff"
-                                anchors.right: parent.right
-                                anchors.rightMargin: 2
-                                anchors.verticalCenter: parent.verticalCenter
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-    
-    Component {
-        id: privacySettingsComponent
-        
-        ColumnLayout {
-            width: parent.width
-            spacing: 15
-            
-            Repeater {
-                model: [
-                    { title: "数据收集", description: "允许收集匿名使用数据" },
-                    { title: "位置信息", description: "允许访问位置信息" },
-                    { title: "个性化推荐", description: "基于使用习惯提供推荐" }
-                ]
-                
-                delegate: Rectangle {
-                    Layout.fillWidth: true
-                    height: 70
-                    radius: 10
-                    color: "#f8f9fa"
-                    
-                    RowLayout {
-                        anchors.fill: parent
-                        anchors.margins: 15
-                        spacing: 15
-                        
-                        ColumnLayout {
-                            Layout.fillWidth: true
-                            spacing: 5
-                            
-                            Text {
-                                text: modelData.title
-                                font.pointSize: 14
-                                font.weight: Font.Medium
-                                color: "#2c3e50"
-                            }
-                            
-                            Text {
-                                text: modelData.description
-                                font.pointSize: 11
-                                color: "#7f8c8d"
-                            }
-                        }
-                        
-                        Rectangle {
-                            width: 50
-                            height: 26
-                            radius: 13
-                            color: index === 0 ? "#2196f3" : "#bdc3c7"
-                            
-                            Rectangle {
-                                width: 22
-                                height: 22
-                                radius: 11
-                                color: "#ffffff"
-                                anchors.right: parent.right
-                                anchors.rightMargin: 2
-                                anchors.verticalCenter: parent.verticalCenter
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-    
-    Component {
-        id: accountSettingsComponent
-        
-        ColumnLayout {
-            width: parent.width
-            spacing: 20
             
             Rectangle {
                 Layout.fillWidth: true
-                height: 120
-                radius: 12
-                color: "#f8f9fa"
+                height: 60
+                radius: 8
+                color: "#2d2d2d"
                 
                 RowLayout {
                     anchors.fill: parent
-                    anchors.margins: 20
-                    spacing: 20
+                    anchors.margins: 15
+                    spacing: 15
                     
-                    Rectangle {
-                        width: 80
-                        height: 80
-                        radius: 40
-                        color: "#2196f3"
-                        
-                        Text {
-                            anchors.centerIn: parent
-                            text: "👤"
-                            font.pointSize: 32
-                        }
+                    Text {
+                        text: "应用目录"
+                        font.pointSize: 14
+                        font.weight: Font.Medium
+                        color: "#cccccc"
                     }
                     
-                    ColumnLayout {
+                    Text {
+                        text: maincfg.get("appDirPath")
+                        font.pointSize: 12
+                        color: "#aaaaaa"
                         Layout.fillWidth: true
-                        spacing: 8
+                        elide: Text.ElideMiddle
+                    }
+                }
+            }
+        }
+    }
+    
+    Component {
+        id: mpSettingsComponent
+        
+        ColumnLayout {
+            Layout.fillWidth: true
+            spacing: 15
+            
+            Text {
+                text: "公众号配置"
+                font.pointSize: 16
+                font.weight: Font.Bold
+                color: "#ffffff"
+                Layout.alignment: Qt.AlignLeft
+                Layout.bottomMargin: 10
+            }
+            
+            Rectangle {
+                Layout.fillWidth: true
+                height: 60
+                radius: 8
+                color: "#2d2d2d"
+                
+                RowLayout {
+                    anchors.fill: parent
+                    anchors.margins: 15
+                    spacing: 15
+                    
+                    Text {
+                        text: "模式"
+                        font.pointSize: 14
+                        font.weight: Font.Medium
+                        color: "#cccccc"
+                    }
+                    
+                    ComboBox {
+                        id: mpModeCombo
+                        Layout.fillWidth: true
+                        model: ["local"]
+                        currentIndex: 0
                         
-                        Text {
-                            text: "用户名"
-                            font.pointSize: 18
-                            font.weight: Font.Bold
-                            color: "#2c3e50"
+                        Component.onCompleted: {
+                            var mode = maincfg.get("mp.mode")
+                            if (mode === "local") {
+                                currentIndex = 0
+                            }
                         }
                         
-                        Text {
-                            text: "user@example.com"
-                            font.pointSize: 12
-                            color: "#7f8c8d"
-                        }
-                        
-                        Text {
-                            text: "编辑资料"
-                            font.pointSize: 12
-                            color: "#2196f3"
-                            font.underline: true
+                        onCurrentIndexChanged: {
+                            maincfg.set("mp.mode", currentText)
                         }
                     }
                 }
             }
             
-            Repeater {
-                model: [
-                    { title: "修改密码", icon: "🔑" },
-                    { title: "绑定手机", icon: "📱" },
-                    { title: "安全设置", icon: "🛡️" },
-                    { title: "退出登录", icon: "🚪" }
-                ]
+            Rectangle {
+                Layout.fillWidth: true
+                height: 60
+                radius: 8
+                color: "#2d2d2d"
                 
-                delegate: Rectangle {
-                    Layout.fillWidth: true
-                    height: 60
-                    radius: 10
-                    color: "#f8f9fa"
+                RowLayout {
+                    anchors.fill: parent
+                    anchors.margins: 15
+                    spacing: 15
                     
-                    RowLayout {
-                        anchors.fill: parent
-                        anchors.margins: 15
-                        spacing: 15
+                    Text {
+                        text: "URL"
+                        font.pointSize: 14
+                        font.weight: Font.Medium
+                        color: "#cccccc"
+                    }
+                    
+                    TextField {
+                        id: mpUrlField
+                        Layout.fillWidth: true
+                        text: maincfg.get("mp.url")
+                        placeholderText: "请输入 URL"
+                        color: "#ffffff"
+                        background: Rectangle { color: "#1e1e1e"; radius: 4 }
                         
-                        Text {
-                            text: icon
-                            font.pointSize: 20
+                        onTextChanged: {
+                            maincfg.set("mp.url", text)
                         }
+                    }
+                }
+            }
+            
+            Rectangle {
+                Layout.fillWidth: true
+                height: 60
+                radius: 8
+                color: "#2d2d2d"
+                
+                RowLayout {
+                    anchors.fill: parent
+                    anchors.margins: 15
+                    spacing: 15
+                    
+                    Text {
+                        text: "密码"
+                        font.pointSize: 14
+                        font.weight: Font.Medium
+                        color: "#cccccc"
+                    }
+                    
+                    TextField {
+                        id: mpPwdField
+                        Layout.fillWidth: true
+                        text: maincfg.get("mp.password")
+                        placeholderText: "请输入密码"
+                        echoMode: TextField.Password
+                        color: "#ffffff"
+                        background: Rectangle { color: "#1e1e1e"; radius: 4 }
                         
-                        Text {
-                            text: title
-                            font.pointSize: 14
-                            color: "#2c3e50"
-                            Layout.fillWidth: true
+                        onTextChanged: {
+                            maincfg.set("mp.password", text)
                         }
+                    }
+                }
+            }
+            
+            Rectangle {
+                Layout.fillWidth: true
+                height: 60
+                radius: 8
+                color: "#2d2d2d"
+                
+                RowLayout {
+                    anchors.fill: parent
+                    anchors.margins: 15
+                    spacing: 15
+                    
+                    Text {
+                        text: "速率限制"
+                        font.pointSize: 14
+                        font.weight: Font.Medium
+                        color: "#cccccc"
+                    }
+                    
+                    TextField {
+                        id: mpRateLimitField
+                        Layout.fillWidth: true
+                        text: maincfg.get("mp.rate_limit")
+                        placeholderText: "请输入速率限制"
+                        color: "#ffffff"
+                        background: Rectangle { color: "#1e1e1e"; radius: 4 }
                         
-                        Text {
-                            text: "›"
-                            font.pointSize: 20
-                            color: "#bdc3c7"
+                        onTextChanged: {
+                            maincfg.set("mp.rate_limit", text)
+                        }
+                    }
+                }
+            }
+            
+            Rectangle {
+                Layout.fillWidth: true
+                height: 60
+                radius: 8
+                color: "#2d2d2d"
+                
+                RowLayout {
+                    anchors.fill: parent
+                    anchors.margins: 15
+                    spacing: 15
+                    
+                    Text {
+                        text: "访问令牌"
+                        font.pointSize: 14
+                        font.weight: Font.Medium
+                        color: "#cccccc"
+                    }
+                    
+                    Text {
+                        text: mptoken
+                        font.pointSize: 12
+                        color: "#aaaaaa"
+                        Layout.fillWidth: true
+                        elide: Text.ElideMiddle
+                    }
+                }
+            }
+            
+            Rectangle {
+                Layout.fillWidth: true
+                height: 60
+                radius: 8
+                color: "#6200ee"
+                
+                RowLayout {
+                    anchors.fill: parent
+                    anchors.margins: 15
+                    spacing: 15
+                    
+                    Text {
+                        text: "📱"
+                        font.pointSize: 20
+                    }
+                    
+                    Text {
+                        text: "管理公众号列表"
+                        font.pointSize: 14
+                        font.weight: Font.Medium
+                        color: "#ffffff"
+                        Layout.fillWidth: true
+                    }
+                    
+                    Text {
+                        text: "›"
+                        font.pointSize: 20
+                        color: "#ffffff"
+                    }
+                }
+                
+                MouseArea {
+                    anchors.fill: parent
+                    hoverEnabled: true
+                    cursorShape: Qt.PointingHandCursor
+                    
+                    onClicked: {
+                        var component = Qt.createComponent("mpManager.qml");
+                        if (component.status === Component.Ready) {
+                            var mpWindow = component.createObject(root, {
+                                "width": 986,
+                                "height": 768,
+                                "visible": true
+                            });
+                        } else {
+                            console.error("Failed to load mpManager.qml:", component.errorString());
                         }
                     }
                     
-                    MouseArea {
-                        anchors.fill: parent
-                        hoverEnabled: true
-                        cursorShape: Qt.PointingHandCursor
+                    onEntered: {
+                        parent.color = "#7b1fa2"
+                    }
+                    
+                    onExited: {
+                        parent.color = "#6200ee"
+                    }
+                }
+            }
+        }
+    }
+    
+    Component {
+        id: aiSettingsComponent
+        
+        ColumnLayout {
+            Layout.fillWidth: true
+            spacing: 15
+            
+            Text {
+                text: "AI 配置"
+                font.pointSize: 16
+                font.weight: Font.Bold
+                color: "#ffffff"
+                Layout.alignment: Qt.AlignLeft
+                Layout.bottomMargin: 10
+            }
+            
+            Rectangle {
+                Layout.fillWidth: true
+                height: 60
+                radius: 8
+                color: "#2d2d2d"
+                
+                RowLayout {
+                    anchors.fill: parent
+                    anchors.margins: 15
+                    spacing: 15
+                    
+                    Text {
+                        text: "AI 模式"
+                        font.pointSize: 14
+                        font.weight: Font.Medium
+                        color: "#cccccc"
+                    }
+                    
+                    ComboBox {
+                        id: aiModeCombo
+                        Layout.fillWidth: true
+                        model: ["ollama"]
+                        currentIndex: 0
                         
-                        onEntered: {
-                            parent.color = "#e8f4fd"
+                        Component.onCompleted: {
+                            var mode = maincfg.get("ai.mode")
+                            if (mode === "ollama") {
+                                currentIndex = 0
+                            }
                         }
                         
-                        onExited: {
-                            parent.color = "#f8f9fa"
+                        onCurrentIndexChanged: {
+                            maincfg.set("ai.mode", currentText)
+                        }
+                    }
+                }
+            }
+            
+            Rectangle {
+                Layout.fillWidth: true
+                height: 60
+                radius: 8
+                color: "#2d2d2d"
+                
+                RowLayout {
+                    anchors.fill: parent
+                    anchors.margins: 15
+                    spacing: 15
+                    
+                    Text {
+                        text: "API 密钥"
+                        font.pointSize: 14
+                        font.weight: Font.Medium
+                        color: "#cccccc"
+                    }
+                    
+                    TextField {
+                        id: aiApiKeyField
+                        Layout.fillWidth: true
+                        text: maincfg.get("ai.api_key")
+                        placeholderText: "请输入 API 密钥"
+                        echoMode: TextField.Password
+                        color: "#ffffff"
+                        background: Rectangle { color: "#1e1e1e"; radius: 4 }
+                        
+                        onTextChanged: {
+                            maincfg.set("ai.api_key", text)
+                        }
+                    }
+                }
+            }
+            
+            Rectangle {
+                Layout.fillWidth: true
+                height: 60
+                radius: 8
+                color: "#2d2d2d"
+                
+                RowLayout {
+                    anchors.fill: parent
+                    anchors.margins: 15
+                    spacing: 15
+                    
+                    Text {
+                        text: "AI URL"
+                        font.pointSize: 14
+                        font.weight: Font.Medium
+                        color: "#cccccc"
+                    }
+                    
+                    TextField {
+                        id: aiUrlField
+                        Layout.fillWidth: true
+                        text: maincfg.get("ai.url")
+                        placeholderText: "请输入 AI URL"
+                        color: "#ffffff"
+                        background: Rectangle { color: "#1e1e1e"; radius: 4 }
+                        
+                        onTextChanged: {
+                            maincfg.set("ai.url", text)
+                        }
+                    }
+                }
+            }
+            
+            Rectangle {
+                Layout.fillWidth: true
+                height: 60
+                radius: 8
+                color: "#2d2d2d"
+                
+                RowLayout {
+                    anchors.fill: parent
+                    anchors.margins: 15
+                    spacing: 15
+                    
+                    Text {
+                        text: "AI 模型"
+                        font.pointSize: 14
+                        font.weight: Font.Medium
+                        color: "#cccccc"
+                    }
+                    
+                    TextField {
+                        id: aiModelField
+                        Layout.fillWidth: true
+                        text: maincfg.get("ai.model")
+                        placeholderText: "请输入 AI 模型"
+                        color: "#ffffff"
+                        background: Rectangle { color: "#1e1e1e"; radius: 4 }
+                        
+                        onTextChanged: {
+                            maincfg.set("ai.model", text)
                         }
                     }
                 }
@@ -652,14 +664,14 @@ Rectangle {
         id: aboutComponent
         
         ColumnLayout {
-            width: parent.width
+            Layout.fillWidth: true
             spacing: 20
             
             Rectangle {
                 Layout.fillWidth: true
                 height: 150
                 radius: 12
-                color: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)"
+                color: "#6200ee"
                 
                 ColumnLayout {
                     anchors.centerIn: parent
@@ -695,8 +707,8 @@ Rectangle {
                 delegate: Rectangle {
                     Layout.fillWidth: true
                     height: 60
-                    radius: 10
-                    color: "#f8f9fa"
+                    radius: 8
+                    color: "#2d2d2d"
                     
                     RowLayout {
                         anchors.fill: parent
@@ -711,14 +723,14 @@ Rectangle {
                         Text {
                             text: title
                             font.pointSize: 14
-                            color: "#2c3e50"
+                            color: "#ffffff"
                             Layout.fillWidth: true
                         }
                         
                         Text {
                             text: "›"
                             font.pointSize: 20
-                            color: "#bdc3c7"
+                            color: "#666666"
                         }
                     }
                     
@@ -728,11 +740,11 @@ Rectangle {
                         cursorShape: Qt.PointingHandCursor
                         
                         onEntered: {
-                            parent.color = "#e8f4fd"
+                            parent.color = "#3d3d3d"
                         }
                         
                         onExited: {
-                            parent.color = "#f8f9fa"
+                            parent.color = "#2d2d2d"
                         }
                     }
                 }

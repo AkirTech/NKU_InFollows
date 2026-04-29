@@ -7,7 +7,6 @@
 #include <QNetworkCookie>
 #include <QUrl>
 #include <QDebug>
-#include <qdebug.h>
 #include <QEventLoop> 
 #include <QByteArray>
 #include <QObject>
@@ -16,12 +15,16 @@
 #include <QJsonObject>
 #include <QJsonDocument>
 #include <QJsonArray>
+#include <QDateTime>
+#include <string>
 #include "WebParser.h"
 
 
 WebParser::WebParser(QObject* parent, cfgLoader* cfg) : QObject(parent), config(cfg), m_isLogin(false)
 {
     manager = new QNetworkAccessManager(this);
+    m_checkTimer = new QTimer(this);
+    connect(m_checkTimer, &QTimer::timeout, this, &WebParser::checkLoginStatus);
     connect(manager, &QNetworkAccessManager::finished,
         this, &WebParser::onFinished);
 }
@@ -33,7 +36,6 @@ void WebParser::fetchUrl(const QUrl& _url) {
 
 QString WebParser::postAIRq(const QString &model ,const QString &u_msg,
     const QString &s_msg,QUrl &baseUrl){
-    /*Used for users.*/
     QJsonObject rqBody;
     rqBody["model"] = model;
     rqBody["stream"] = false;
@@ -53,7 +55,6 @@ QString WebParser::postAIRq(const QString &model ,const QString &u_msg,
     
     QNetworkReply* reply = manager->post(rq, jsonData);
     
-    // 等待网络请求完成
     QEventLoop loop;
     connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
     loop.exec();
@@ -72,7 +73,6 @@ QString WebParser::postAIRq(const QString &model ,const QString &u_msg,
 
 QString WebParser::postAIRq(const QString &model ,const QString &sys_prompt,
         QUrl &baseUrl){
-    /*Used for single time call*/
     QJsonObject rqBody;
     rqBody["model"] = model;
     rqBody["stream"] = false;
@@ -92,7 +92,6 @@ QString WebParser::postAIRq(const QString &model ,const QString &sys_prompt,
         
     QNetworkReply* reply = manager->post(rq, jsonData);
     
-    // 等待网络请求完成
     QEventLoop loop;
     connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
     loop.exec();
@@ -117,7 +116,6 @@ QJsonObject WebParser::getMPSearchRq(const QString &search, const QUrl &Url, con
     
     QNetworkReply* reply = manager->get(rq);
     
-    // 等待网络请求完成
     QEventLoop loop;
     connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
     loop.exec();
@@ -147,8 +145,7 @@ QJsonObject WebParser::getMPSearchRq(const QString& search, const QString& Url, 
 
 QString WebParser::we_login(const QUrl Url, const QString& username, const QString& password) {
     
-	//check if currently have token
-    QString c_token = config->get("mp.access_token");
+	QString c_token = config->get("mp.access_token");
     if (c_token != "") {
 		qDebug() << "Already have token, skipping mp backend login.";
     }
@@ -157,14 +154,12 @@ QString WebParser::we_login(const QUrl Url, const QString& username, const QStri
     rq.setRawHeader("accept", "application/json");
     rq.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
 
-    // 构建form-urlencoded格式的请求体
     QByteArray postData;
     postData.append("grant_type=password&");
     postData.append("username=").append(QUrl::toPercentEncoding(username)).append("&");
     postData.append("password=").append(QUrl::toPercentEncoding(password)).append("&");
     postData.append("scope=&client_id=&client_secret=");
 
-    // 使用局部的QNetworkAccessManager，避免触发全局的onFinished槽函数
     QNetworkAccessManager localManager;
     QNetworkReply* reply = localManager.post(rq, postData);
 
@@ -181,7 +176,7 @@ QString WebParser::we_login(const QUrl Url, const QString& username, const QStri
         if (!res.isNull() && res.isObject()) {
             token = res.object().value("access_token").toString();
             if (!token.isEmpty()) {
-                if (config) { // 添加空指针检查
+                if (config) {
                     config->set("mp.access_token", token);
                 }
                 qDebug() << "Login successful, token:" << token ;
@@ -214,59 +209,67 @@ QString WebParser::onFinished(QNetworkReply* reply) {
     return reply->error() == QNetworkReply::NoError ? "OK" : "Error";
 }
 
-QString WebParser::wxLoginGetQR(const QString &Url = "http://localhost:8001",const QString access = "") {
-	//请求二维码链接和状态
-
+QString WebParser::wxLoginGetQR(const QString &Url,const QString access) {
 	QNetworkAccessManager localManager;
+    
+    // 第一步：获取二维码
 	QNetworkRequest rq(Url+ "/api/v1/wx/auth/qr/code");
-    ///api/v1/wx/auth/qr/code
 	rq.setRawHeader("accept", "application/json");
 	rq.setRawHeader("Authorization", QString("Bearer %1").arg(access).toUtf8());
     QNetworkReply* reply =  localManager.get(rq);
     QEventLoop loop;
     connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
 	loop.exec();
-
-    QThread::msleep(2000);
-    //获取二维码图片
-	QNetworkRequest rq2(Url+"/api/v1/wx/auth/qr/image");
-    rq2.setRawHeader("accept", "application/json");
-	rq2.setRawHeader("Authorization", QString("Bearer %1").arg(access).toUtf8());
-    QNetworkReply* reply2 =  localManager.get(rq2);
-
-    QThread::msleep(1000);
-
-    QEventLoop loop2;
-    connect(reply2, &QNetworkReply::finished, &loop2, &QEventLoop::quit);
-	loop2.exec();
-	//判断二维码状态，扫码进度
-    QJsonObject qr_status = QJsonDocument::fromJson(reply2->readAll()).object();
-    qDebug() << reply2->readAll();
     
-    if (qr_status["data"].toBool() == true) {
+    // 第二步：等待二维码生成完成，最多尝试30次，每次间隔2秒
+    int max_attempts = 30;
+    bool qr_ready = false;
+    
+    for (int i = 0; i < max_attempts; i++) {
+        QNetworkRequest rq2(Url+"/api/v1/wx/auth/qr/image");
+        rq2.setRawHeader("accept", "application/json");
+        rq2.setRawHeader("Authorization", QString("Bearer %1").arg(access).toUtf8());
+        QNetworkReply* reply2 =  localManager.get(rq2);
+        QEventLoop loop2;
+        connect(reply2, &QNetworkReply::finished, &loop2, &QEventLoop::quit);
+        loop2.exec();
+        
+        QJsonObject qr_status = QJsonDocument::fromJson(reply2->readAll()).object();
+        
+        if (qr_status["data"].toBool() == true) {
+            qr_ready = true;
+            qDebug() << "QR code generated successfully!";
+            break;
+        }
+        
+        qDebug() << "Waiting for QR code to generate, attempt" << (i+1) << "/" << max_attempts;
+        QThread::msleep(2000);
+    }
+    
+    if (qr_ready) {
         try
         {
             system("copy //backend/we-mp-rss/static/wx_qrcode.png //wx_qrcode.png");
         }
         catch (const std::exception& e) {
-			qDebug() << "Error copying QR code image: " << e.what() << ". Please check if the file exists and try again.";
+            qDebug() << "Error copying QR code image: " << e.what() << ". Please check if the file exists and try again.";
         }
         qDebug() << "Generated QR OK!";
         return "生成成功";
     }
     else {
-        return "生成成功";
+        qDebug() << "QR code generation timed out!";
+        return "生成失败";
     }
 }
 
-QString WebParser::getLoginStatus(const QString &Url= "http://localhost:8001", const QString access = "") {
+QString WebParser::getLoginStatus(const QString &Url, const QString access) {
 	QNetworkAccessManager localManager;
 
     QNetworkRequest rq(Url);
     rq.setRawHeader("accept", "application/json");
-    rq.setHeader(QNetworkRequest::ContentTypeHeader, "application / x - www - form - urlencoded");
-    rq.setRawHeader("Authorization:", QString("Bearer %1").arg(access).toUtf8());
-    // /api/v1/wx/auth/qr/status  
+    rq.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
+    rq.setRawHeader("Authorization", QString("Bearer %1").arg(access).toUtf8());
 	
 	QNetworkReply* reply =  localManager.get(rq);
 
@@ -274,15 +277,22 @@ QString WebParser::getLoginStatus(const QString &Url= "http://localhost:8001", c
     connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
 	loop.exec();
 
-	QString login_status; 
-    QString qrcode_status;
+	QString login_status = "waiting";
     if (reply->error() == QNetworkReply::NoError) {
         QByteArray data = reply->readAll();
         qDebug() << "Response data:" << data;
         QJsonDocument res = QJsonDocument::fromJson(data);
         if (!res.isNull() && res.isObject()) {
 			QJsonObject returndata = res.object().value("data").toObject();
-            login_status = returndata.value("login_status").toString();
+            if (returndata.value("login_status").isBool()) {
+                if (returndata.value("login_status").toBool()) {
+                    login_status = "success";
+                } else {
+                    login_status = "waiting";
+                }
+            } else {
+                login_status = returndata.value("login_status").toString();
+            }
             qDebug() << "Login status:" << login_status;
         } else {
             qDebug() << "Error parsing JSON response";
@@ -294,36 +304,84 @@ QString WebParser::getLoginStatus(const QString &Url= "http://localhost:8001", c
     return login_status;
 }
 
+void WebParser::updateWxExpireTime() {
+	int currentTime = QDateTime::currentSecsSinceEpoch();
+	int newExpireTime = currentTime + 4 * 24 * 60 * 60;
+    config->set("mp.expire", QString::number(newExpireTime));
+    return;
+}
+
+QString WebParser::checkRSSWxStatus(const QString &access) {
+    QUrl Url = QUrl("http://localhost:8001/api/v1/wx/mps/update/MP_WXS_2397804841");
+
+	QNetworkAccessManager localManager;
+    QNetworkRequest rq(Url);
+    rq.setRawHeader("accept", "application/json");
+	rq.setRawHeader("Authorization", QString("Bearer %1").arg(access).toUtf8());
+
+    QNetworkReply* reply =  localManager.get(rq);
+    QEventLoop loop;
+    connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
+    loop.exec();
+    if (reply->error() == QNetworkReply::NoError) {
+        QByteArray data = reply->readAll();
+        qDebug() << "Response data:" << data;
+        QJsonDocument res = QJsonDocument::fromJson(data);
+        if (!res.isNull() && res.isObject()) {
+            bool returndata = (res.object().value("message").toString() == "success");
+            qDebug() << "RSS Wx status:" << returndata;
+            return returndata ? "成功" : "失败";
+        } else {
+            qDebug() << "Error parsing JSON response";
+            return "解析错误";
+        }
+    } else {
+        qDebug() << "Error in checkRSSWxStatus:" << reply->errorString();
+        return "请求错误";
+	}
+}
+
+QString WebParser::realIDConstructor(const QString& id) {
+	std::string decoded = base64_decode(id.toStdString());
+	return QString::fromStdString(std::string("MP_WXS_"+decoded));
+}
+
+
 void WebParser::wxLoginCheckLoop(const QString &Url, const QString access) {
-    m_checkUrl = Url+"/api/v1/wx/auth/qr/status";
+    m_checkUrl = Url + "/api/v1/wx/auth/qr/status";
     m_accessToken = access;
     m_isLogin = false;
+    m_checkTimer->stop();
     checkLoginStatus();
 }
 
 void WebParser::checkLoginStatus() {
     QString status = getLoginStatus(m_checkUrl, m_accessToken);
+    qDebug() << "Login check status:" << status;
     
     if (status == "success") {
         m_isLogin = true;
+        updateWxExpireTime();
+        m_checkTimer->stop();
         emit loginSuccess();
-    } else if (status == "waiting") {
-        QTimer::singleShot(2000, this, &WebParser::checkLoginStatus);
-    } else if (status == "scanned") {
-        emit notice("已扫描，请在手机上确认登录");
-        QTimer::singleShot(2000, this, &WebParser::checkLoginStatus);
-    } else if (status == "expired") {
-        emit notice("二维码已过期，请重新获取");
-    } else if (status == "exists") {
-        return;
     } else {
-        QTimer::singleShot(2000, this, &WebParser::checkLoginStatus);
+        m_checkTimer->start(2000);
     }
+}
+
+bool WebParser::checkCurrentWxLogin() {
+	int expireTime = config->get("mp.expire").toInt();
+	int currentTime = QDateTime::currentSecsSinceEpoch();
+	return currentTime < expireTime;
+}
+
+QString WebParser::getWxExpireTime() {
+    int expireTime = config->get("mp.expire").toInt();
+    QDateTime expireDateTime = QDateTime::fromSecsSinceEpoch(expireTime);
+    return expireDateTime.toString(Qt::ISODate);
 }
 
 static QByteArray jsonToByteArray(const QJsonObject& json) {
     QJsonDocument doc(json);
     return doc.toJson();
 }
-	
-    

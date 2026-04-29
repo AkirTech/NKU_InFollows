@@ -17,6 +17,7 @@ cfgLoader::cfgLoader(QString path) {
 }
 
 QString cfgLoader::get(const QString &key) {
+    //->Undefined or the string.
     return mainObj[key].toString();
 }
 

@@ -19,7 +19,7 @@ void FileIO::save(const QString& jsonString,const QString& fileName = defaultFil
 {
     // ����ָ������·����������Ӧ�ó���Ŀ¼�µ� data.json
     //QString filePath = QCoreApplication::applicationDirPath() + "/data.json";
-    QString filePath = QCoreApplication::applicationDirPath() + fileName;
+    QString filePath = QCoreApplication::applicationDirPath() + "/" + fileName;
 
     QFile file(filePath);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
@@ -36,7 +36,7 @@ void FileIO::save(const QString& jsonString,const QString& fileName = defaultFil
 
 QString FileIO::loadAsString(const QString& fileName)
 {
-    QString filePath = QCoreApplication::applicationDirPath() + fileName;
+    QString filePath = QCoreApplication::applicationDirPath() + "/" + fileName;
     QFile file(filePath);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         qWarning()   << "[Internal Error 503]" << file.errorString();

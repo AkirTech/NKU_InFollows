@@ -40,5 +40,11 @@ def logout():
     url = "http://localhost:8001/api/v1/wx/auth/logout"
     print(rq.post(url, headers=headers))
 
+def test_checkLogin():
+    token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJxaWdlMCIsImV4cCI6MTc3ODA2NzA2OX0.1oASmuYDyGUza0G2IXWi6PmrbvlNiAXazXyhLlmm3xY"
+    headers = {"Authorization": f"Bearer {token}"}
+    print(rq.get("http://localhost:8001/api/v1/wx/auth/qr/status", headers=headers).json())
+
 if __name__ == "__main__":
-    logout()
+    
+    test_checkLogin()

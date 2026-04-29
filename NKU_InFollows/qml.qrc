@@ -1,5 +1,5 @@
 <RCC>
-    <qresource prefix="/qt/qml/nku_infollows" lang="qml">
+    <qresource lang="qml" prefix="/qt/qml/nku_infollows">
         <file>main.qml</file>
         <file>Greet.qml</file>
         <file>Collect1.qml</file>
@@ -16,5 +16,6 @@
         <file>res/media/check-circle.svg</file>
         <file>qr_code.qml</file>
         <file>wx_qrcode.png</file>
+        <file>mpManager.qml</file>
     </qresource>
 </RCC>

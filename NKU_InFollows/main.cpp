@@ -74,6 +74,9 @@ int main(int argc, char *argv[])
         
         engine.load(QUrl(pageURLs[progress]));
     }
+    else if (status == QStringLiteral("finish")){
+        engine.load(QUrl(pageURLs[6]));
+    }
     else {
         engine.load(QUrl(QStringLiteral("qrc:/qt/qml/nku_infollows/main.qml")));
         

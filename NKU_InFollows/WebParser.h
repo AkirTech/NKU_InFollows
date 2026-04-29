@@ -14,6 +14,8 @@
 #include <QJsonObject>
 #include <QJsonDocument>
 #include <QJsonArray>
+#include <QTimer>
+#include <string>
 #include "cfgLoader.h"
 
 #include <libs/cpp-base64-2.rc.08/base64.h>
@@ -31,15 +33,19 @@ public:
 	Q_INVOKABLE QString postAIRq(const QString& model, const QString& sys_prompt,
 		QUrl& baseUrl);
 	QJsonArray msgs;
+	QString realIDConstructor(const QString& id);
+	void updateWxExpireTime();
 	Q_INVOKABLE QJsonObject getMPSearchRq(const QString& search, const QUrl& Url, const QString access);
 	Q_INVOKABLE QJsonObject getMPSearchRq(const QString& search, const QString& Url, const QString access);
 	Q_INVOKABLE QString we_login(const QUrl Url,const QString& username, const QString& password);
 	Q_INVOKABLE QString getLoginStatus(const QString &Url, const QString access);
 	Q_INVOKABLE QString wxLoginGetQR(const QString& Url, const QString access);
 	Q_INVOKABLE void wxLoginCheckLoop(const QString &Url, const QString access);
+	Q_INVOKABLE QString checkRSSWxStatus(const QString& access);
+	Q_INVOKABLE bool checkCurrentWxLogin();
+	Q_INVOKABLE QString getWxExpireTime();
 signals:
-	void notice(const QString& message);
-	void loginSuccess();
+    void loginSuccess();
 
 
 private:
@@ -48,8 +54,9 @@ private:
 	QString m_checkUrl;
 	QString m_accessToken;
 	bool m_isLogin;
+	QTimer* m_checkTimer;
+	void checkLoginStatusInternal();
 private slots:
 	Q_INVOKABLE QString onFinished(QNetworkReply* reply);
 	void checkLoginStatus();
-
 };
