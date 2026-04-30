@@ -5,7 +5,7 @@
     "ai.model": "",
     "ai.url": "http://localhost:11434/v1",
     "appDirPath": "K:/InFollows/NKU_InFollows/x64/Debug",
-    "mp.access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJxaWdlMCIsImV4cCI6MTc3ODA3MzgxMn0.KdRlDAyJ8IubKF_1uvEDMHuY6rH-xCMR1FEXDrOIctc",
+    "mp.access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJxaWdlMCIsImV4cCI6MTc3ODEzMDk4NX0.Aj87fGSke8rHtd3ecYgbQ9O9oCPnyYWQHU2KDGKmvWs",
     "mp.expire": "1777811052",
     "mp.mode": "local",
     "mp.password": "",
@@ -13,5 +13,6 @@
     "mp.url": "http://localhost:8001/api/v1/wx",
     "mp_mode": "local",
     "oobe_progres": "0",
+    "restart_flag": "done",
     "username": "qige0"
 }

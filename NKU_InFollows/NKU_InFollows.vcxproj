@@ -101,6 +101,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="libs\cpp-base64-2.rc.08\base64.cpp" />
+    <ClCompile Include="MPSourceParser.cpp" />
     <ClCompile Include="MyUtils.cpp" />
     <ClCompile Include="cfgLoader.cpp">
       <DynamicSource Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">input</DynamicSource>
@@ -139,6 +140,7 @@
     <QtMoc Include="FileIO.h" />
     <QtMoc Include="cfgLoader.h" />
     <ClInclude Include="libs\cpp-base64-2.rc.08\base64.h" />
+    <QtMoc Include="MPSourceParser.h" />
     <ClInclude Include="MyUtils.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>

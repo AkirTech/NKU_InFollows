@@ -6,7 +6,9 @@
 #include "fileio.h"
 #include "cfgLoader.h"
 #include "WebParser.h"
+#include "MPSourceParser.h"
 #include <QProcessEnvironment>
+#include <QProcess>
 
 
 static const QString pageURLs[50] {
@@ -30,6 +32,7 @@ int main(int argc, char *argv[])
     QGuiApplication app(argc, argv);
     cfgLoader maincfg("config.json");
 	WebParser webParser(nullptr, &maincfg);
+	MPSourceParser mpSourceParser;
     maincfg.set("appDirPath", QCoreApplication::applicationDirPath());
 	FileIO fileIO;
 	QString mp_status = maincfg.get("mp.mode");
@@ -66,26 +69,33 @@ int main(int argc, char *argv[])
     
 
     QQmlApplicationEngine engine;
+    
+    QString restartFlag = maincfg.get("restart_flag");
     if (status == QStringLiteral("fresh")){
         engine.load(QUrl(pageURLs[0]));
     }
     else if (status == QStringLiteral("evaluate")){
         int progress = maincfg.get("oobe_progres").toInt();
-        
         engine.load(QUrl(pageURLs[progress]));
     }
     else if (status == QStringLiteral("finish")){
-        engine.load(QUrl(pageURLs[6]));
+        if (restartFlag == QStringLiteral("pending")) {
+            maincfg.set("restart_flag", QStringLiteral("done"));
+            QProcess::startDetached(QCoreApplication::applicationFilePath());
+            return 0;
+        } else {
+            engine.load(QUrl(pageURLs[6]));
+        }
     }
     else {
         engine.load(QUrl(QStringLiteral("qrc:/qt/qml/nku_infollows/main.qml")));
-        
     }
     // engine.load(QUrl(QStringLiteral("qrc:/qt/qml/nku_infollows/main.qml")));
 	engine.rootContext()->setContextProperty("appDirPath", QCoreApplication::applicationDirPath());
 	engine.rootContext()->setContextProperty("FileIO", &fileIO);
 	engine.rootContext()->setContextProperty("maincfg", &maincfg);
 	engine.rootContext()->setContextProperty("webParser", &webParser);
+    engine.rootContext()->setContextProperty("mpSourceParser", &mpSourceParser);
     engine.rootContext()->setContextProperty("username", username);
     engine.rootContext()->setContextProperty("mptoken", maincfg.get("mp.access_token"));
     if (engine.rootObjects().isEmpty())

@@ -45,6 +45,13 @@ def test_checkLogin():
     headers = {"Authorization": f"Bearer {token}"}
     print(rq.get("http://localhost:8001/api/v1/wx/auth/qr/status", headers=headers).json())
 
+def test_search():
+    url = "http://localhost:8001/api/v1/wxmps/search/NKU%E5%AF%86%E7%BD%91?offset=0&limit=5"
+    token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJxaWdlMCIsImV4cCI6MTc3ODA2NzA2OX0.1oASmuYDyGUza0G2IXWi6PmrbvlNiAXazXyhLlmm3xY"
+    headers = {"Authorization": f"Bearer {token}"}
+    print(rq.get(url, headers=headers).json())
+
+
 if __name__ == "__main__":
     
-    test_checkLogin()
+    test_search()

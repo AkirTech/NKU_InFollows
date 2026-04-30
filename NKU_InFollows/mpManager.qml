@@ -153,12 +153,21 @@ Window {
         id: addMpDialog
         title: "添加公众号"
         width: 400
-        height: 300
+        height: 400
+        modal: true
+        focus: true
+        
+        property bool isSearching: false
+        property bool hasSearched: false
+        property var searchResult: null
+        property string foundNickname: ""
+        property string foundSignature: ""
+        property string foundId: ""
         
         ColumnLayout {
             anchors.fill: parent
             anchors.margins: 20
-            spacing: 20
+            spacing: 15
             
             TextField {
                 id: addNameField
@@ -168,12 +177,89 @@ Window {
                 background: Rectangle { color: "#2d2d2d"; radius: 4 }
             }
             
-            TextField {
-                id: addIdField
+            Button {
+                text: "搜索"
                 Layout.fillWidth: true
-                placeholderText: "ID"
-                color: "#ffffff"
-                background: Rectangle { color: "#2d2d2d"; radius: 4 }
+                enabled: !addMpDialog.isSearching && addNameField.text.length > 0
+                
+                onClicked: {
+                    addMpDialog.isSearching = true
+                    searchStatus.text = "正在搜索..."
+                    previewInfo.visible = false
+                    confirmButton.visible = false
+                    
+                    var mpUrl = "http://localhost:8001/api/v1/wx/mps/search/"
+                    var searchUrl = mpUrl + encodeURIComponent(addNameField.text)
+                    var result = webParser.getMPSearchRq(addNameField.text, searchUrl, mptoken)
+                    
+                    if (result && Object.keys(result).length > 0) {
+                        addMpDialog.searchResult = result
+                        addMpDialog.foundNickname = mpSourceParser.getNickname(result)
+                        addMpDialog.foundSignature = mpSourceParser.getDescription(result)
+                        addMpDialog.foundId = mpSourceParser.getRealID(result)
+                        
+                        if (addMpDialog.foundSignature.length > 50) {
+                            addMpDialog.foundSignature = addMpDialog.foundSignature.substring(0, 50) + "..."
+                        }
+                        
+                        previewNickname.text = "公众号: " + addMpDialog.foundNickname
+                        previewSignature.text = "简介: " + addMpDialog.foundSignature
+                        
+                        searchStatus.text = "搜索成功！"
+                        previewInfo.visible = true
+                        confirmButton.visible = true
+                        addMpDialog.hasSearched = true
+                    } else {
+                        searchStatus.text = "未找到匹配的公众号"
+                    }
+                    
+                    addMpDialog.isSearching = false
+                }
+            }
+            
+            Text {
+                id: searchStatus
+                text: ""
+                color: "#aaaaaa"
+                font.pointSize: 10
+                Layout.alignment: Qt.AlignCenter
+            }
+            
+            ColumnLayout {
+                id: previewInfo
+                visible: false
+                Layout.fillWidth: true
+                spacing: 10
+                
+                Rectangle {
+                    Layout.fillWidth: true
+                    height: 80
+                    radius: 8
+                    color: "#2d2d2d"
+                    
+                    ColumnLayout {
+                        anchors.fill: parent
+                        anchors.margins: 12
+                        spacing: 8
+                        
+                        Text {
+                            id: previewNickname
+                            text: ""
+                            color: "#ffffff"
+                            font.weight: Font.Bold
+                            Layout.fillWidth: true
+                        }
+                        
+                        Text {
+                            id: previewSignature
+                            text: ""
+                            color: "#aaaaaa"
+                            font.pointSize: 10
+                            Layout.fillWidth: true
+                            wrapMode: Text.WordWrap
+                        }
+                    }
+                }
             }
             
             RowLayout {
@@ -183,23 +269,48 @@ Window {
                 Button {
                     text: "取消"
                     onClicked: {
+                        addNameField.text = ""
+                        addMpDialog.searchResult = null
+                        addMpDialog.foundNickname = ""
+                        addMpDialog.foundSignature = ""
+                        addMpDialog.foundId = ""
+                        addMpDialog.hasSearched = false
+                        searchStatus.text = ""
+                        previewInfo.visible = false
+                        confirmButton.visible = false
                         addMpDialog.close()
                     }
                 }
                 
                 Button {
-                    text: "添加"
+                    id: confirmButton
+                    text: "确认添加"
+                    visible: false
+                    enabled: addMpDialog.hasSearched
+                    
                     onClicked: {
-                        if (addNameField.text !== "" && addIdField.text !== "") {
-                            mp_sources.append({
-                                name: addNameField.text,
-                                id: addIdField.text
-                            })
-                            saveData()
-                            addMpDialog.close()
-                            addNameField.text = ""
-                            addIdField.text = ""
+                        if (addMpDialog.foundNickname === "" || addMpDialog.foundId === "") {
+                            searchStatus.text = "请先搜索公众号"
+                            return
                         }
+                        
+                        mp_sources.append({
+                            name: addMpDialog.foundNickname,
+                            id: addMpDialog.foundId
+                        })
+                        saveData()
+                        searchStatus.text = "添加成功！"
+                        
+                        addNameField.text = ""
+                        addMpDialog.searchResult = null
+                        addMpDialog.foundNickname = ""
+                        addMpDialog.foundSignature = ""
+                        addMpDialog.foundId = ""
+                        addMpDialog.hasSearched = false
+                        previewInfo.visible = false
+                        confirmButton.visible = false
+                        
+                        addMpDialog.close()
                     }
                 }
             }
@@ -211,6 +322,8 @@ Window {
         title: "编辑公众号"
         width: 400
         height: 300
+        modal: true
+        focus: true
         
         ColumnLayout {
             anchors.fill: parent
@@ -259,8 +372,10 @@ Window {
         }
         
         onOpened: {
-            editNameField.text = mp_sources.get(selectedIndex).name
-            editIdField.text = mp_sources.get(selectedIndex).id
+            if (selectedIndex >= 0 && selectedIndex < mp_sources.count) {
+                editNameField.text = mp_sources.get(selectedIndex).name
+                editIdField.text = mp_sources.get(selectedIndex).id
+            }
         }
     }
     

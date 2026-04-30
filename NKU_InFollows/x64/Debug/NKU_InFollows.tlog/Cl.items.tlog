@@ -1,4 +1,5 @@
 K:\InFollows\NKU_InFollows\NKU_InFollows\libs\cpp-base64-2.rc.08\base64.cpp;K:\InFollows\NKU_InFollows\NKU_InFollows\x64\Debug\base64.obj
+K:\InFollows\NKU_InFollows\NKU_InFollows\MPSourceParser.cpp;K:\InFollows\NKU_InFollows\NKU_InFollows\x64\Debug\MPSourceParser.obj
 K:\InFollows\NKU_InFollows\NKU_InFollows\MyUtils.cpp;K:\InFollows\NKU_InFollows\NKU_InFollows\x64\Debug\MyUtils.obj
 K:\InFollows\NKU_InFollows\NKU_InFollows\cfgLoader.cpp;K:\InFollows\NKU_InFollows\NKU_InFollows\x64\Debug\cfgLoader.obj
 K:\InFollows\NKU_InFollows\NKU_InFollows\FileIO.cpp;K:\InFollows\NKU_InFollows\NKU_InFollows\x64\Debug\FileIO.obj
@@ -7,4 +8,5 @@ K:\InFollows\NKU_InFollows\NKU_InFollows\WebParser.cpp;K:\InFollows\NKU_InFollow
 K:\InFollows\NKU_InFollows\NKU_InFollows\x64\Debug\qt\moc\moc_WebParser.cpp;K:\InFollows\NKU_InFollows\NKU_InFollows\x64\Debug\moc_WebParser.obj
 K:\InFollows\NKU_InFollows\NKU_InFollows\x64\Debug\qt\moc\moc_FileIO.cpp;K:\InFollows\NKU_InFollows\NKU_InFollows\x64\Debug\moc_FileIO.obj
 K:\InFollows\NKU_InFollows\NKU_InFollows\x64\Debug\qt\moc\moc_cfgLoader.cpp;K:\InFollows\NKU_InFollows\NKU_InFollows\x64\Debug\moc_cfgLoader.obj
+K:\InFollows\NKU_InFollows\NKU_InFollows\x64\Debug\qt\moc\moc_MPSourceParser.cpp;K:\InFollows\NKU_InFollows\NKU_InFollows\x64\Debug\moc_MPSourceParser.obj
 K:\InFollows\NKU_InFollows\NKU_InFollows\x64\Debug\qt\rcc\qrc_qml.cpp;K:\InFollows\NKU_InFollows\NKU_InFollows\x64\Debug\qrc_qml.obj

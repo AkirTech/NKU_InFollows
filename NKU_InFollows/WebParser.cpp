@@ -110,11 +110,31 @@ QString WebParser::postAIRq(const QString &model ,const QString &sys_prompt,
 }
 
 QJsonObject WebParser::getMPSearchRq(const QString &search, const QUrl &Url, const QString access) {
-    QNetworkRequest rq(Url);
+    QString urlStr = Url.toString();
+    
+    qDebug() << "Original URL:" << urlStr;
+    
+    if (urlStr.contains("wxmps")) {
+        urlStr = urlStr.replace("wxmps", "wx/mps");
+    }
+    
+    QUrl requestUrl(urlStr);
+    
+    QUrlQuery query;
+    query.addQueryItem("offset", "0");
+    query.addQueryItem("limit", "5");
+    requestUrl.setQuery(query);
+    
+    qDebug() << "Search URL:" << requestUrl.toString();
+    qDebug() << "Access token:" << access;
+    
+    QNetworkAccessManager localmanager;
+
+    QNetworkRequest rq(requestUrl);
     rq.setRawHeader("Authorization", "Bearer " + access.toUtf8());
     rq.setRawHeader("accept", "application/json");
     
-    QNetworkReply* reply = manager->get(rq);
+    QNetworkReply* reply = localmanager.get(rq);
     
     QEventLoop loop;
     connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
@@ -123,12 +143,23 @@ QJsonObject WebParser::getMPSearchRq(const QString &search, const QUrl &Url, con
     QJsonObject result;
     if (reply->error() == QNetworkReply::NoError) {
         QByteArray data = reply->readAll();
-        QJsonDocument res = QJsonDocument::fromJson(data);
-        if (!res.isNull() && res.isObject()) {
-            QJsonArray list = res.object().value("list").toArray();
-            result = list.isEmpty() ? QJsonObject() : list.first().toObject();
+        qDebug() << "Search response data:" << data;
+        
+        if (data.isEmpty() || data == "null" || data == "\"null\"") {
+            qDebug() << "Empty or null response";
         } else {
-            qDebug() << "Error parsing JSON response";
+            QJsonDocument res = QJsonDocument::fromJson(data);
+            if (!res.isNull() && res.isObject()) {
+                QJsonObject dataObj = res.object().value("data").toObject();
+                if (!dataObj.isEmpty()) {
+                    QJsonArray list = dataObj.value("list").toArray();
+                    result = list.isEmpty() ? QJsonObject() : list.first().toObject();
+                } else {
+                    qDebug() << "Data object is empty";
+                }
+            } else {
+                qDebug() << "Error parsing JSON response";
+            }
         }
     } else {
         qDebug() << "Error in getMPSearchRq:" << reply->errorString();
@@ -312,6 +343,7 @@ void WebParser::updateWxExpireTime() {
 }
 
 QString WebParser::checkRSSWxStatus(const QString &access) {
+	//利用一个固定的URL来检查微信登录状态，返回结果中包含message字段，值为"success"表示登录成功，否则表示登录失败
     QUrl Url = QUrl("http://localhost:8001/api/v1/wx/mps/update/MP_WXS_2397804841");
 
 	QNetworkAccessManager localManager;
@@ -339,11 +371,6 @@ QString WebParser::checkRSSWxStatus(const QString &access) {
         qDebug() << "Error in checkRSSWxStatus:" << reply->errorString();
         return "请求错误";
 	}
-}
-
-QString WebParser::realIDConstructor(const QString& id) {
-	std::string decoded = base64_decode(id.toStdString());
-	return QString::fromStdString(std::string("MP_WXS_"+decoded));
 }
 
 

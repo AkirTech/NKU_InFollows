@@ -22,20 +22,11 @@ Rectangle {
             title: "完成设置"
             text: "软件即将重新启动以开始服务。"
             buttons: MessageDialog.Ok
-            // 当用户点击按钮时触发
+            
             onAccepted: {
-                // 1. 动态加载第二个窗口的组件
-                    var component = Qt.createComponent("finish.qml")
-                    if (component.status === Component.Ready) {
-                        // 2. 创建新窗口对象
-                        var newWindow = component.createObject()
-                        // 3. 显示新窗口
-                        newWindow.show()
-                        // 4. 关闭当前窗口
-                        mainWindow.close()
-                    } else {
-                        console.error("加载 finish.qml 失败:", component.errorString())
-                    }
+                maincfg.set("OOBE", "finish")
+                maincfg.set("restart_flag", "pending")
+                mainWindow.close()
             }
             
         }

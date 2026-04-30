@@ -47,6 +47,9 @@
     <ClCompile Include="libs\cpp-base64-2.rc.08\base64.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="MPSourceParser.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="FileIO.h">
@@ -56,6 +59,9 @@
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="WebParser.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="MPSourceParser.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>

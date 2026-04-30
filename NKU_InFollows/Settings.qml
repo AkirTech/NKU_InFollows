@@ -15,6 +15,7 @@ Window {
     color: "#121212"
     
     property int selectedIndex: 0
+    property var mpManagerWindow: null
     
     RowLayout {
         anchors.fill: parent
@@ -480,15 +481,41 @@ Window {
                     cursorShape: Qt.PointingHandCursor
                     
                     onClicked: {
-                        var component = Qt.createComponent("mpManager.qml");
-                        if (component.status === Component.Ready) {
-                            var mpWindow = component.createObject(root, {
-                                "width": 986,
-                                "height": 768,
-                                "visible": true
-                            });
-                        } else {
-                            console.error("Failed to load mpManager.qml:", component.errorString());
+                        try {
+                            if (root.mpManagerWindow) {
+                                root.mpManagerWindow.raise()
+                                root.mpManagerWindow.requestActivate()
+                                return
+                            }
+                            
+                            var component = Qt.createComponent("qrc:/qt/qml/nku_infollows/mpManager.qml");
+                            
+                            function tryCreate() {
+                                if (component.status === Component.Ready) {
+                                    root.mpManagerWindow = component.createObject(Qt.application);
+                                    
+                                    if (root.mpManagerWindow) {
+                                        root.mpManagerWindow.width = 986
+                                        root.mpManagerWindow.height = 768
+                                        root.mpManagerWindow.visible = true
+                                        
+                                        root.mpManagerWindow.onClosing.connect(function() {
+                                            root.mpManagerWindow.destroy()
+                                            root.mpManagerWindow = null
+                                        })
+                                    } else {
+                                        console.error("Failed to create mpManager window")
+                                    }
+                                } else if (component.status === Component.Error) {
+                                    console.error("Failed to load mpManager.qml:", component.errorString())
+                                } else if (component.status === Component.Loading) {
+                                    component.statusChanged.connect(tryCreate)
+                                }
+                            }
+                            
+                            tryCreate()
+                        } catch (e) {
+                            console.error("Error opening mpManager:", e)
                         }
                     }
                     
@@ -695,59 +722,89 @@ Window {
                 }
             }
             
-            Repeater {
-                model: [
-                    { title: "更新日志", icon: "📝" },
-                    { title: "用户协议", icon: "📄" },
-                    { title: "隐私政策", icon: "🔒" },
-                    { title: "联系我们", icon: "📧" },
-                    { title: "官方网站", icon: "🌐" }
-                ]
+            Text {
+                text: "NKU_InFollows 是一款专为南开大学师生打造的公众号内容聚合平台。通过智能分析和AI驱动的内容推荐，帮助用户快速获取感兴趣的公众号文章，提升信息获取效率。"
+                font.pointSize: 14
+                color: "#aaaaaa"
+                wrapMode: Text.WordWrap
+                Layout.fillWidth: true
+            }
+            
+            Text {
+                text: "技术支持"
+                font.pointSize: 16
+                font.weight: Font.Bold
+                color: "#ffffff"
+                Layout.alignment: Qt.AlignLeft
+            }
+            
+            RowLayout {
+                Layout.fillWidth: true
+                spacing: 12
+                Layout.alignment: Qt.AlignLeft
                 
-                delegate: Rectangle {
-                    Layout.fillWidth: true
-                    height: 60
-                    radius: 8
-                    color: "#2d2d2d"
+                Button {
+                    text: "📝 更新日志"
+                    Layout.preferredWidth: 120
+                    Layout.preferredHeight: 40
+                    background: Rectangle { color: "#2d2d2d"; radius: 6 }
                     
-                    RowLayout {
-                        anchors.fill: parent
-                        anchors.margins: 15
-                        spacing: 15
-                        
-                        Text {
-                            text: icon
-                            font.pointSize: 20
-                        }
-                        
-                        Text {
-                            text: title
-                            font.pointSize: 14
-                            color: "#ffffff"
-                            Layout.fillWidth: true
-                        }
-                        
-                        Text {
-                            text: "›"
-                            font.pointSize: 20
-                            color: "#666666"
-                        }
-                    }
-                    
-                    MouseArea {
-                        anchors.fill: parent
-                        hoverEnabled: true
-                        cursorShape: Qt.PointingHandCursor
-                        
-                        onEntered: {
-                            parent.color = "#3d3d3d"
-                        }
-                        
-                        onExited: {
-                            parent.color = "#2d2d2d"
-                        }
+                    onClicked: {
+                        Qt.openUrlExternally("https://github.com/AkirTech/NKU_InFollows")
                     }
                 }
+                
+                Button {
+                    text: "📄 用户协议"
+                    Layout.preferredWidth: 120
+                    Layout.preferredHeight: 40
+                    background: Rectangle { color: "#2d2d2d"; radius: 6 }
+                }
+                
+                Button {
+                    text: "🔒 隐私政策"
+                    Layout.preferredWidth: 120
+                    Layout.preferredHeight: 40
+                    background: Rectangle { color: "#2d2d2d"; radius: 6 }
+                }
+            }
+            
+            RowLayout {
+                Layout.fillWidth: true
+                spacing: 12
+                Layout.alignment: Qt.AlignLeft
+                
+                Button {
+                    text: "📧 联系我们"
+                    Layout.preferredWidth: 120
+                    Layout.preferredHeight: 40
+                    background: Rectangle { color: "#2d2d2d"; radius: 6 }
+                }
+                
+                Button {
+                    text: "🌐 官方网站"
+                    Layout.preferredWidth: 120
+                    Layout.preferredHeight: 40
+                    background: Rectangle { color: "#2d2d2d"; radius: 6 }
+                    
+                    onClicked: {
+                        Qt.openUrlExternally("https://github.com/AkirTech/NKU_InFollows")
+                    }
+                }
+            }
+            
+            Rectangle {
+                Layout.fillWidth: true
+                height: 1
+                color: "#333333"
+                Layout.bottomMargin: 10
+            }
+            
+            Text {
+                text: "© 2024 NKU_InFollows. All rights reserved."
+                font.pointSize: 12
+                color: "#666666"
+                Layout.alignment: Qt.AlignHCenter
             }
         }
     }

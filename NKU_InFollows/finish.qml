@@ -165,7 +165,7 @@ ApplicationWindow {
 
     Timer {
         id: statusTimer
-        interval: 30000
+        interval: 15000
         repeat: true
         onTriggered: {
             var wx_status = webParser.checkCurrentWxLogin();

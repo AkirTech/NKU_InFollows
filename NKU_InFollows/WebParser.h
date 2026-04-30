@@ -5,6 +5,7 @@
 #include <QtNetwork/QNetworkReply>
 #include <QNetworkCookie>
 #include <QUrl>
+#include <QUrlQuery>
 #include <QDebug>
 #include <QEventLoop> 
 #include <QByteArray>
@@ -33,7 +34,7 @@ public:
 	Q_INVOKABLE QString postAIRq(const QString& model, const QString& sys_prompt,
 		QUrl& baseUrl);
 	QJsonArray msgs;
-	QString realIDConstructor(const QString& id);
+	
 	void updateWxExpireTime();
 	Q_INVOKABLE QJsonObject getMPSearchRq(const QString& search, const QUrl& Url, const QString access);
 	Q_INVOKABLE QJsonObject getMPSearchRq(const QString& search, const QString& Url, const QString access);
