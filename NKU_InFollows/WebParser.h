@@ -45,6 +45,7 @@ public:
 	Q_INVOKABLE QString checkRSSWxStatus(const QString& access);
 	Q_INVOKABLE bool checkCurrentWxLogin();
 	Q_INVOKABLE QString getWxExpireTime();
+	Q_INVOKABLE bool startBackendService();
 signals:
     void loginSuccess();
 

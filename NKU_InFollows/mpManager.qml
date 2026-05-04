@@ -9,7 +9,7 @@ Window {
     id: mpManagerWindow
     width: 986
     height: 768
-    title: "公众号管理"
+    title: "NKU_InFollows-公众号管理"
     visible: false
     Material.theme: Material.Dark
     Material.accent: Material.Purple
@@ -28,9 +28,15 @@ Window {
         buttons: MessageDialog.Ok | MessageDialog.Cancel
         
         onAccepted: {
-            var name = mp_sources.get(selectedIndex).name
-            mp_sources.remove(selectedIndex)
-            saveData()
+            try {
+                if (selectedIndex >= 0 && selectedIndex < mp_sources.count) {
+                    var name = mp_sources.get(selectedIndex).name
+                    mp_sources.remove(selectedIndex)
+                    saveData()
+                }
+            } catch (e) {
+                console.error("删除错误:", e)
+            }
         }
     }
     
@@ -164,6 +170,19 @@ Window {
         property string foundSignature: ""
         property string foundId: ""
         
+        onOpened: {
+            addNameField.text = ""
+            addMpDialog.searchResult = null
+            addMpDialog.foundNickname = ""
+            addMpDialog.foundSignature = ""
+            addMpDialog.foundId = ""
+            addMpDialog.hasSearched = false
+            addMpDialog.isSearching = false
+            searchStatus.text = ""
+            previewInfo.visible = false
+            confirmButton.visible = false
+        }
+        
         ColumnLayout {
             anchors.fill: parent
             anchors.margins: 20
@@ -183,37 +202,48 @@ Window {
                 enabled: !addMpDialog.isSearching && addNameField.text.length > 0
                 
                 onClicked: {
-                    addMpDialog.isSearching = true
-                    searchStatus.text = "正在搜索..."
-                    previewInfo.visible = false
-                    confirmButton.visible = false
-                    
-                    var mpUrl = "http://localhost:8001/api/v1/wx/mps/search/"
-                    var searchUrl = mpUrl + encodeURIComponent(addNameField.text)
-                    var result = webParser.getMPSearchRq(addNameField.text, searchUrl, mptoken)
-                    
-                    if (result && Object.keys(result).length > 0) {
-                        addMpDialog.searchResult = result
-                        addMpDialog.foundNickname = mpSourceParser.getNickname(result)
-                        addMpDialog.foundSignature = mpSourceParser.getDescription(result)
-                        addMpDialog.foundId = mpSourceParser.getRealID(result)
+                    try {
+                        addMpDialog.isSearching = true
+                        searchStatus.text = "正在搜索...（若长时间无响应请重新登录微信公众平台）"
+                        previewInfo.visible = false
+                        confirmButton.visible = false
                         
-                        if (addMpDialog.foundSignature.length > 50) {
-                            addMpDialog.foundSignature = addMpDialog.foundSignature.substring(0, 50) + "..."
+                        console.log("搜索公众号:", addNameField.text)
+                        console.log("mptoken:", mptoken)
+                        
+                        var mpUrl = "http://localhost:8001/api/v1/wx/mps/search"
+                        var searchUrl = mpUrl
+                        console.log("Search URL (base):", searchUrl)
+                        
+                        var result = webParser.getMPSearchRq(addNameField.text, searchUrl, mptoken)
+                        console.log("Search result:", result)
+                        
+                        if (result && Object.keys(result).length > 0) {
+                            addMpDialog.searchResult = result
+                            addMpDialog.foundNickname = mpSourceParser.getNickname(result)
+                            addMpDialog.foundSignature = mpSourceParser.getDescription(result)
+                            addMpDialog.foundId = mpSourceParser.getRealID(result)
+                            
+                            if (addMpDialog.foundSignature.length > 40) {
+                                addMpDialog.foundSignature = addMpDialog.foundSignature.substring(0, 40) + "..."
+                            }
+                            
+                            previewNickname.text = "公众号: " + addMpDialog.foundNickname
+                            previewSignature.text = "简介: " + addMpDialog.foundSignature
+                            
+                            searchStatus.text = "搜索成功！"
+                            previewInfo.visible = true
+                            confirmButton.visible = true
+                            addMpDialog.hasSearched = true
+                        } else {
+                            searchStatus.text = "未找到匹配的公众号"
                         }
-                        
-                        previewNickname.text = "公众号: " + addMpDialog.foundNickname
-                        previewSignature.text = "简介: " + addMpDialog.foundSignature
-                        
-                        searchStatus.text = "搜索成功！"
-                        previewInfo.visible = true
-                        confirmButton.visible = true
-                        addMpDialog.hasSearched = true
-                    } else {
-                        searchStatus.text = "未找到匹配的公众号"
+                    } catch (e) {
+                        console.error("搜索错误:", e)
+                        searchStatus.text = "搜索出错，请稍后重试"
+                    } finally {
+                        addMpDialog.isSearching = false
                     }
-                    
-                    addMpDialog.isSearching = false
                 }
             }
             
@@ -275,6 +305,7 @@ Window {
                         addMpDialog.foundSignature = ""
                         addMpDialog.foundId = ""
                         addMpDialog.hasSearched = false
+                        addMpDialog.isSearching = false
                         searchStatus.text = ""
                         previewInfo.visible = false
                         confirmButton.visible = false
@@ -360,11 +391,15 @@ Window {
                 Button {
                     text: "保存"
                     onClicked: {
-                        if (editNameField.text !== "" && editIdField.text !== "") {
-                            mp_sources.setProperty(selectedIndex, "name", editNameField.text)
-                            mp_sources.setProperty(selectedIndex, "id", editIdField.text)
-                            saveData()
-                            editMpDialog.close()
+                        try {
+                            if (editNameField.text !== "" && editIdField.text !== "" && selectedIndex >= 0 && selectedIndex < mp_sources.count) {
+                                mp_sources.setProperty(selectedIndex, "name", editNameField.text)
+                                mp_sources.setProperty(selectedIndex, "id", editIdField.text)
+                                saveData()
+                                editMpDialog.close()
+                            }
+                        } catch (e) {
+                            console.error("保存错误:", e)
                         }
                     }
                 }

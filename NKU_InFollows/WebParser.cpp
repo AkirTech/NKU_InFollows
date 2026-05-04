@@ -17,6 +17,7 @@
 #include <QJsonArray>
 #include <QDateTime>
 #include <string>
+#include <QProcess>
 #include "WebParser.h"
 
 
@@ -113,10 +114,17 @@ QJsonObject WebParser::getMPSearchRq(const QString &search, const QUrl &Url, con
     QString urlStr = Url.toString();
     
     qDebug() << "Original URL:" << urlStr;
+    qDebug() << "Search term:" << search;
     
     if (urlStr.contains("wxmps")) {
         urlStr = urlStr.replace("wxmps", "wx/mps");
     }
+    
+    // Append search term as path parameter
+    if (!urlStr.endsWith("/")) {
+        urlStr += "/";
+    }
+    urlStr += search.toUtf8().toPercentEncoding();
     
     QUrl requestUrl(urlStr);
     
@@ -163,6 +171,10 @@ QJsonObject WebParser::getMPSearchRq(const QString &search, const QUrl &Url, con
         }
     } else {
         qDebug() << "Error in getMPSearchRq:" << reply->errorString();
+        if (reply->errorString().contains("Connection refused")) {
+            qDebug() << "Backend not running, attempting to start...";
+            startBackendService();
+        }
     }
     
     reply->deleteLater();
@@ -221,6 +233,10 @@ QString WebParser::we_login(const QUrl Url, const QString& username, const QStri
     }
     else {
         qDebug() << "Error in we_login:" << reply->errorString();
+        if (reply->errorString().contains("Connection refused")) {
+            qDebug() << "Backend not running, attempting to start...";
+            startBackendService();
+        }
     }
 
     reply->deleteLater();
@@ -243,8 +259,25 @@ QString WebParser::onFinished(QNetworkReply* reply) {
 QString WebParser::wxLoginGetQR(const QString &Url,const QString access) {
 	QNetworkAccessManager localManager;
     
+    QNetworkRequest rq(Url+ "/api/v1/wx/auth/qr/code");
+    rq.setRawHeader("accept", "application/json");
+    rq.setRawHeader("Authorization", QString("Bearer %1").arg(access).toUtf8());
+    QNetworkReply* testReply = localManager.get(rq);
+    QEventLoop testLoop;
+    connect(testReply, &QNetworkReply::finished, &testLoop, &QEventLoop::quit);
+    testLoop.exec();
+    
+    if (testReply->error() != QNetworkReply::NoError) {
+        qDebug() << "Backend connection test failed:" << testReply->errorString();
+        if (testReply->errorString().contains("Connection refused")) {
+            qDebug() << "Backend not running, attempting to start...";
+            startBackendService();
+        }
+    }
+    testReply->deleteLater();
+    
     // 第一步：获取二维码
-	QNetworkRequest rq(Url+ "/api/v1/wx/auth/qr/code");
+	rq.setUrl(QUrl(Url+ "/api/v1/wx/auth/qr/code"));
 	rq.setRawHeader("accept", "application/json");
 	rq.setRawHeader("Authorization", QString("Bearer %1").arg(access).toUtf8());
     QNetworkReply* reply =  localManager.get(rq);
@@ -411,4 +444,26 @@ QString WebParser::getWxExpireTime() {
 static QByteArray jsonToByteArray(const QJsonObject& json) {
     QJsonDocument doc(json);
     return doc.toJson();
+}
+
+bool WebParser::startBackendService() {
+    qDebug() << "Starting backend service...";
+    
+    QString appDir = QCoreApplication::applicationDirPath();
+    QString backendBat = appDir + "/backend_invoker.bat";
+    
+    qDebug() << "Backend invoker path:" << backendBat;
+    
+    QProcess* process = new QProcess();
+    process->setWorkingDirectory(appDir);
+    process->start(backendBat);
+    
+    if (process->waitForStarted(5000)) {
+        qDebug() << "Backend service started successfully";
+        QThread::sleep(3);
+        return true;
+    } else {
+        qDebug() << "Failed to start backend service:" << process->errorString();
+        return false;
+    }
 }

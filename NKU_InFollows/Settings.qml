@@ -8,7 +8,7 @@ Window {
     id: root
     width: 1100
     height: 800
-    title: "设置"
+    title: "NKU_InFollows-设置"
     visible: false
     Material.theme: Material.Dark
     Material.accent: Material.Purple
@@ -500,7 +500,6 @@ Window {
                                         root.mpManagerWindow.visible = true
                                         
                                         root.mpManagerWindow.onClosing.connect(function() {
-                                            root.mpManagerWindow.destroy()
                                             root.mpManagerWindow = null
                                         })
                                     } else {

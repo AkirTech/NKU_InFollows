@@ -9,6 +9,11 @@
 #include "MPSourceParser.h"
 #include <QProcessEnvironment>
 #include <QProcess>
+#include <QtNetwork/QNetworkAccessManager>
+#include <QtNetwork/QNetworkRequest>
+#include <QtNetwork/QNetworkReply>
+#include <QEventLoop>
+#include <QThread>
 
 
 static const QString pageURLs[50] {
@@ -21,6 +26,62 @@ static const QString pageURLs[50] {
 	QStringLiteral("qrc:/qt/qml/nku_infollows/finish.qml"),
 };
 
+bool checkAndStartBackend(const QString& appDir) {
+    QString backendUrl = "http://localhost:8001";
+    
+    QNetworkAccessManager manager;
+    QNetworkRequest request(QUrl(backendUrl + "/api/health"));
+    QNetworkReply* reply = manager.get(request);
+    
+    QEventLoop loop;
+    QObject::connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
+    loop.exec();
+    
+    bool backendRunning = (reply->error() == QNetworkReply::NoError);
+    reply->deleteLater();
+    
+    if (!backendRunning) {
+        qDebug() << "Backend not running, attempting to start...";
+        
+        QString backendBat = appDir + "/backend_invoker.bat";
+        qDebug() << "Backend invoker path:" << backendBat;
+        
+        QProcess* process = new QProcess();
+        process->setWorkingDirectory(appDir);
+        process->start(backendBat);
+        
+        if (process->waitForStarted(5000)) {
+            qDebug() << "Backend service started successfully, waiting for it to be ready...";
+            
+            for (int i = 0; i < 10; i++) {
+                QNetworkReply* checkReply = manager.get(request);
+                QEventLoop checkLoop;
+                QObject::connect(checkReply, &QNetworkReply::finished, &checkLoop, &QEventLoop::quit);
+                checkLoop.exec();
+                
+                if (checkReply->error() == QNetworkReply::NoError) {
+                    qDebug() << "Backend is ready!";
+                    checkReply->deleteLater();
+                    return true;
+                }
+                checkReply->deleteLater();
+                
+                QThread::sleep(1);
+                qDebug() << "Waiting for backend to be ready..." << (i+1) << "/10";
+            }
+            
+            qDebug() << "Backend did not become ready in time";
+            return false;
+        } else {
+            qDebug() << "Failed to start backend service:" << process->errorString();
+            return false;
+        }
+    }
+    
+    qDebug() << "Backend is already running";
+    return true;
+}
+
 int main(int argc, char *argv[])
 {
 #if defined(Q_OS_WIN) && QT_VERSION_CHECK(5, 6, 0) <= QT_VERSION && QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
@@ -31,11 +92,20 @@ int main(int argc, char *argv[])
 
     QGuiApplication app(argc, argv);
     cfgLoader maincfg("config.json");
+    maincfg.set("appDirPath", QCoreApplication::applicationDirPath());
+    
+    QString appDir = QCoreApplication::applicationDirPath();
+    
+    QString mp_status = maincfg.get("mp.mode");
+    if (mp_status == QStringLiteral("local")) {
+        qDebug() << "Checking backend status...";
+        checkAndStartBackend(appDir);
+    }
+
 	WebParser webParser(nullptr, &maincfg);
 	MPSourceParser mpSourceParser;
-    maincfg.set("appDirPath", QCoreApplication::applicationDirPath());
 	FileIO fileIO;
-	QString mp_status = maincfg.get("mp.mode");
+	
     if (mp_status == QStringLiteral("local")) {
         try {
 			qDebug() << "Initializing local mp server...";
@@ -73,10 +143,6 @@ int main(int argc, char *argv[])
     QString restartFlag = maincfg.get("restart_flag");
     if (status == QStringLiteral("fresh")){
         engine.load(QUrl(pageURLs[0]));
-    }
-    else if (status == QStringLiteral("evaluate")){
-        int progress = maincfg.get("oobe_progres").toInt();
-        engine.load(QUrl(pageURLs[progress]));
     }
     else if (status == QStringLiteral("finish")){
         if (restartFlag == QStringLiteral("pending")) {
