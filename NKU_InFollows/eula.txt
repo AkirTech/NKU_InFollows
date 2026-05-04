@@ -1,53 +1,57 @@
-End User License Agreement (EULA)
+最终用户协议 (EULA)
 
 1. Acceptance of Terms
 
-By using NKU InFollows, you agree to be bound by this End User License Agreement ("EULA"). If you do not agree to these terms, you may not use the software.
+使用NKU_InFollows（以下简称“本软件”），即表明您已详细阅读并接受本最终用户协议（EULA），若您不接受本最终用户协议，请勿使用本软件。
 
-2. License Grant
+2. 许可范围
 
-NKU InFollows grants you a personal, non-exclusive, non-transferable, limited license to use the software for your personal, non-commercial use.
+本最终用户协议附于本软件发行版中，受限于MIT License，现对此发行版的许可范围如下：
 
-3. Restrictions
+本软件授予您个人的，非排他性的、不可转让的、有限的许可，允许您出于个人用途及非商业目的使用该软件。
 
-You may not:
-- Modify, adapt, or reverse engineer the software
-- Redistribute, sublicense, or rent the software
-- Use the software for commercial purposes
-- Remove or alter any copyright or trademark notices
+3. 限制
 
-4. Privacy
+您不能：
+- 重新分发、再许可或租用软件
+- 将软件用于商业目的
+- 删除或更改任何版权或商标声明
 
-NKU InFollows collects and processes certain information as described in our Privacy Policy. By using the software, you consent to such collection and processing.
+4. 隐私
 
-We will collect the following information:
-- Your personal interests
-- Your API key, which is used for AI inference ( If you choose to use remote AI services ).
-- Your Wexin mp token
-- Your system username
+本软件收集和处理以下所述的某些信息。
+使用该软件即表示您同意此类收集和处理。
 
-5. Disclaimer of Warranties
+我们将收集以下信息：
+- 您的个人兴趣（由您自己填写）
+- 您的API密钥，用于AI推理（如果您选择使用远程AI服务）。
+- 你的微信公众平台登录令牌
+- 您的系统用户名
 
-The software is provided "as is" without warranty of any kind, either express or implied, including but not limited to the implied warranties of merchantability, fitness for a particular purpose, and non-infringement.
+以上所有信息均存储在本地，您无需担心由本软件或将引发的隐私问题。
 
-6. Limitation of Liability
+5. 免责声明
 
-In no event shall NKU InFollows or its licensors be liable for any damages arising out of the use or inability to use the software, including but not limited to damages for loss of profits, business interruption, or loss of information.
+该软件按“原样”提供，不附有任何形式的明示或暗示保证，包括但不限于适销性、特定用途适用性和不侵权的暗示保证。
 
-7. Termination
+6. 责任限制
 
-This license is effective until terminated. You may terminate it at any time by destroying all copies of the software. NKU InFollows may terminate this license if you fail to comply with any term of this EULA.
+在任何情况下，本软件或其许可方均不对因使用或无法使用该软件而造成的任何损害承担责任，包括但不限于利润损失、业务中断或信息丢失的损害。
 
-8. Governing Law
+7. 终止
 
-This EULA shall be governed by and construed in accordance with the laws of the People's Republic of China.
+该许可证在终止前一直有效。您可以随时通过销毁本软件的所有副本来终止该授权与限制。如果您未能遵守本 EULA 的任何条款，本软件可能会终止本许可。
 
-9. Changes to this EULA
+8. 适用法律
 
-NKU InFollows may update this EULA from time to time. You will be notified of any changes, and continued use of the software constitutes acceptance of the new terms.
+本 EULA 应受中华人民共和国法律管辖并按中华人民共和国法律解释。
 
-10. Contact Information
+9. 本 EULA 的变更
 
-If you have any questions about this EULA, please contact us via 2514011@mail.nankai.edu.cn.
+本软件可能会不时更新本 EULA。您将收到任何更改通知，继续使用该软件即表示您接受新条款。
 
-© 2026 NKU InFollows. All rights reserved.
+10. 联系方式
+
+如果您对本EULA有任何疑问，请通过2514011@mail.nankai.edu.cn联系我们。
+
+© 2026 NKU InFollows。版权所有。

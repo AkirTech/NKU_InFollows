@@ -24,13 +24,13 @@ void FileIO::save(const QString& jsonString,const QString& fileName = defaultFil
     QFile file(filePath);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
 
-        qWarning()   << "[Internal Error 503]" << file.errorString();
+        qWarning()   << "FileIO:[Internal Error 503]" << file.errorString();
         return;
     }
 
     file.write(jsonString.toUtf8());
     file.close();
-    qDebug() << "[OK 200]:" << filePath;
+    qDebug() << "FileIO:[OK 200]:" << filePath;
 
 }
 
@@ -39,11 +39,11 @@ QString FileIO::loadAsString(const QString& fileName)
     QString filePath = QCoreApplication::applicationDirPath() + "/" + fileName;
     QFile file(filePath);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        qWarning()   << "[Internal Error 503]" << file.errorString();
+        qWarning()   << "FileIO:[Internal Error 503]" << file.errorString();
         return "";
     }
     QString String = QString::fromUtf8(file.readAll());
     file.close();
-    qDebug() << "[OK 200] Loaded.";
+    qDebug() << "FileIO:[OK 200] Loaded.";
 	return String;
 }

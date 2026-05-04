@@ -115,6 +115,7 @@
     <None Include="config.json" />
     <None Include="Eula.qml" />
     <None Include="finish.qml" />
+    <None Include="interestManager.qml" />
     <None Include="mpManager.qml" />
     <None Include="mpSource.qml" />
     <None Include="MyButton.qml" />

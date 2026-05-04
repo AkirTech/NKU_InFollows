@@ -17,5 +17,6 @@
         <file>qr_code.qml</file>
         <file>wx_qrcode.png</file>
         <file>mpManager.qml</file>
+        <file>interestManager.qml</file>
     </qresource>
 </RCC>

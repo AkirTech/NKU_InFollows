@@ -16,6 +16,7 @@ Window {
     
     property int selectedIndex: 0
     property var mpManagerWindow: null
+    property var interestManagerWindow: null
     
     RowLayout {
         anchors.fill: parent
@@ -256,6 +257,82 @@ Window {
                         color: "#aaaaaa"
                         Layout.fillWidth: true
                         elide: Text.ElideMiddle
+                    }
+                }
+            }
+            
+            Rectangle {
+                Layout.fillWidth: true
+                height: 60
+                radius: 8
+                color: "#2d2d2d"
+                
+                RowLayout {
+                    anchors.fill: parent
+                    anchors.margins: 15
+                    spacing: 15
+                    
+                    Text {
+                        text: "采集频率"
+                        font.pointSize: 14
+                        font.weight: Font.Medium
+                        color: "#cccccc"
+                    }
+                    
+                    TextField {
+                        id: collectRateField
+                        Layout.fillWidth: true
+                        text: maincfg.get("mp.collect_rate")
+                        placeholderText: "请输入采集频率（秒）"
+                        color: "#ffffff"
+                        background: Rectangle { color: "#1e1e1e"; radius: 4 }
+                        
+                        onTextChanged: {
+                            maincfg.set("mp.collect_rate", text)
+                        }
+                    }
+                }
+            }
+            
+            Rectangle {
+                Layout.fillWidth: true
+                height: 60
+                radius: 8
+                color: "#2d2d2d"
+                
+                RowLayout {
+                    anchors.fill: parent
+                    anchors.margins: 15
+                    spacing: 15
+                    
+                    Text {
+                        text: "兴趣管理"
+                        font.pointSize: 14
+                        font.weight: Font.Medium
+                        color: "#cccccc"
+                    }
+                    
+                    Item {
+                        Layout.fillWidth: true
+                    }
+                    
+                    Button {
+                        id: interestManagerBtn
+                        text: "管理"
+                        Layout.preferredWidth: 70
+                        onClicked: {
+                            if (!root.interestManagerWindow || root.interestManagerWindow === null) {
+                                var component = Qt.createComponent("interestManager.qml")
+                                if (component.status === Component.Ready) {
+                                    root.interestManagerWindow = component.createObject(root)
+                                    root.interestManagerWindow.show()
+                                } else {
+                                    console.error("Failed to load interestManager.qml:", component.errorString())
+                                }
+                            } else {
+                                root.interestManagerWindow.show()
+                            }
+                        }
                     }
                 }
             }
@@ -778,6 +855,9 @@ Window {
                     Layout.preferredWidth: 120
                     Layout.preferredHeight: 40
                     background: Rectangle { color: "#2d2d2d"; radius: 6 }
+                    onClicked: {
+                        Qt.openUrlExternally("mailto://2514011@nankai.edu.cn")
+                    }
                 }
                 
                 Button {
@@ -800,7 +880,7 @@ Window {
             }
             
             Text {
-                text: "© 2024 NKU_InFollows. All rights reserved."
+                text: "© 2026 NKU_InFollows. All rights reserved."
                 font.pointSize: 12
                 color: "#666666"
                 Layout.alignment: Qt.AlignHCenter
