@@ -18,5 +18,7 @@
         <file>wx_qrcode.png</file>
         <file>mpManager.qml</file>
         <file>interestManager.qml</file>
+        <file>OnboardSetup.qml</file>
+        <file>ResultsView.qml</file>
     </qresource>
 </RCC>

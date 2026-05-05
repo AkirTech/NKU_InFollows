@@ -47,3 +47,27 @@ QString FileIO::loadAsString(const QString& fileName)
     qDebug() << "FileIO:[OK 200] Loaded.";
 	return String;
 }
+
+QVariantList FileIO::listFiles(const QString& dirPath)
+{
+    QDir dir(dirPath);
+    QStringList fileNames = dir.entryList(QDir::Files, QDir::Name);
+    QVariantList result;
+    for (const QString& fileName : fileNames) {
+        result.append(fileName);
+    }
+    return result;
+}
+
+QString FileIO::read(const QString& filePath)
+{
+    QFile file(filePath);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        qWarning() << "FileIO:[Read Error]" << file.errorString();
+        return "";
+    }
+    QString content = QString::fromUtf8(file.readAll());
+    file.close();
+    qDebug() << "FileIO:[OK] Read:" << filePath;
+    return content;
+}

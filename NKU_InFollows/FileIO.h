@@ -7,6 +7,7 @@
 #include <QJsonObject>
 #include <QJsonDocument>
 #include <QJsonArray>
+#include <QDir>
 
 class FileIO : public QObject
 {
@@ -16,6 +17,8 @@ public:
 
     Q_INVOKABLE void save(const QString& jsonString,const QString& fileName);
 	Q_INVOKABLE QString loadAsString(const QString& fileName);
+    Q_INVOKABLE QVariantList listFiles(const QString& dirPath);
+    Q_INVOKABLE QString read(const QString& filePath);
 };
 
 #endif // FILEIO_H

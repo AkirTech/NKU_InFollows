@@ -4,11 +4,11 @@
 
 /*{
         "fakeid": "MjM5NzgwNDg0MQ==",
-        "nickname": "ÄÏ¿ª´óÑ§",
+        "nickname": "ï¿½Ï¿ï¿½ï¿½ï¿½Ñ§",
         "alias": "nankaiuni",
         "round_head_img": "http://mmbiz.qpic.cn/mmbiz_png/lFwibdBqNNWsqBozAbXld2c2wxkewxfibFiatuaGAJsUYUhwTdtYibqsJ3wM8Zmk1JK2kvmC8XtCy7Q0CwmArZmV1Q/0?wx_fmt=png",
         "service_type": 0,
-        "signature": "ÔÊ¹«ÔÊÄÜ£¬ÈÕÐÂÔÂÒì¡£ÕâÀïÊÇÄÏ¿ª´óÑ§¹ÙÎ¢£¬°ÙÄêÄÏ¿ª»¶Ó­Äã~",
+        "signature": "ï¿½Ê¹ï¿½ï¿½ï¿½ï¿½Ü£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ì¡£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ï¿½ï¿½Ñ§ï¿½ï¿½Î¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ï¿½ï¿½Ó­ï¿½ï¿½~",
         "username": "",
         "verify_status": 2
       },
@@ -28,5 +28,11 @@ QString MPSourceParser::getDescription(const QJsonObject& source) {
 }
 QString MPSourceParser::getRealID(const QJsonObject& source) {
     return realIDConstructor(source["fakeid"].toString());
+}
+QString MPSourceParser::getRawID(const QJsonObject& source) {
+    return source["fakeid"].toString();
+}
+QString MPSourceParser::getAvatar(const QJsonObject& source) {
+    return source["round_head_img"].toString();
 }
 

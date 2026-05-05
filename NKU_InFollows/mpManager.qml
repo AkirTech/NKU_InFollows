@@ -169,6 +169,8 @@ Window {
         property string foundNickname: ""
         property string foundSignature: ""
         property string foundId: ""
+        property string foundCover: ""
+        property string foundRawId: ""
         
         onOpened: {
             addNameField.text = ""
@@ -176,6 +178,8 @@ Window {
             addMpDialog.foundNickname = ""
             addMpDialog.foundSignature = ""
             addMpDialog.foundId = ""
+            addMpDialog.foundCover = ""
+            addMpDialog.foundRawId = ""
             addMpDialog.hasSearched = false
             addMpDialog.isSearching = false
             searchStatus.text = ""
@@ -223,6 +227,8 @@ Window {
                             addMpDialog.foundNickname = mpSourceParser.getNickname(result)
                             addMpDialog.foundSignature = mpSourceParser.getDescription(result)
                             addMpDialog.foundId = mpSourceParser.getRealID(result)
+                            addMpDialog.foundCover = mpSourceParser.getAvatar(result)
+                            addMpDialog.foundRawId = mpSourceParser.getRawID(result)
                             
                             if (addMpDialog.foundSignature.length > 40) {
                                 addMpDialog.foundSignature = addMpDialog.foundSignature.substring(0, 40) + "..."
@@ -325,23 +331,38 @@ Window {
                             return
                         }
                         
-                        mp_sources.append({
-                            name: addMpDialog.foundNickname,
-                            id: addMpDialog.foundId
-                        })
-                        saveData()
-                        searchStatus.text = "添加成功！"
-                        
-                        addNameField.text = ""
-                        addMpDialog.searchResult = null
-                        addMpDialog.foundNickname = ""
-                        addMpDialog.foundSignature = ""
-                        addMpDialog.foundId = ""
-                        addMpDialog.hasSearched = false
-                        previewInfo.visible = false
-                        confirmButton.visible = false
-                        
-                        addMpDialog.close()
+                        try {
+                            var mpUrl = "http://localhost:8001"
+                            var result = webParser.addMP(mpUrl, mptoken, addMpDialog.foundNickname, addMpDialog.foundCover, addMpDialog.foundRawId, addMpDialog.foundSignature)
+                            console.log("Add MP result:", result)
+                            
+                            if (result.startsWith("SUCCESS")) {
+                                mp_sources.append({
+                                    name: addMpDialog.foundNickname,
+                                    id: addMpDialog.foundId
+                                })
+                                saveData()
+                                searchStatus.text = "添加成功！"
+                                
+                                addNameField.text = ""
+                                addMpDialog.searchResult = null
+                                addMpDialog.foundNickname = ""
+                                addMpDialog.foundSignature = ""
+                                addMpDialog.foundId = ""
+                                addMpDialog.foundCover = ""
+                                addMpDialog.foundRawId = ""
+                                addMpDialog.hasSearched = false
+                                previewInfo.visible = false
+                                confirmButton.visible = false
+                                
+                                addMpDialog.close()
+                            } else {
+                                searchStatus.text = "添加失败: " + result
+                            }
+                        } catch (e) {
+                            console.error("Add MP error:", e)
+                            searchStatus.text = "添加出错，请稍后重试"
+                        }
                     }
                 }
             }

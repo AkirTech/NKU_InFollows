@@ -71,6 +71,11 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
   </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <PreBuildEvent>
+      <Command>python increment_build.py</Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="Configuration">
     <ClCompile>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -115,7 +120,9 @@
     <None Include="config.json" />
     <None Include="Eula.qml" />
     <None Include="finish.qml" />
+    <None Include="increment_build.py" />
     <None Include="interestManager.qml" />
+    <None Include="manifest.json" />
     <None Include="mpManager.qml" />
     <None Include="mpSource.qml" />
     <None Include="MyButton.qml" />

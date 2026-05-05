@@ -108,6 +108,8 @@
     <None Include="interestManager.qml">
       <Filter>Source Files</Filter>
     </None>
+    <None Include="manifest.json" />
+    <None Include="increment_build.py" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">

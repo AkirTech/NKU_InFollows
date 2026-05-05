@@ -87,12 +87,14 @@ int main(int argc, char *argv[])
 #if defined(Q_OS_WIN) && QT_VERSION_CHECK(5, 6, 0) <= QT_VERSION && QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 #endif
-    //Set QML_XHR_ALLOW_FILE_READ to 1 to enable this feature.
+    //Set QML_XHR_ALLOW_FILE_READ to 1 to enable XHR feature.
     qputenv("QML_XHR_ALLOW_FILE_READ", "1");
 
     QGuiApplication app(argc, argv);
     cfgLoader maincfg("config.json");
+	cfgLoader manifest("manifest.json");
     maincfg.set("appDirPath", QCoreApplication::applicationDirPath());
+    
     
     QString appDir = QCoreApplication::applicationDirPath();
     
@@ -160,6 +162,7 @@ int main(int argc, char *argv[])
 	engine.rootContext()->setContextProperty("appDirPath", QCoreApplication::applicationDirPath());
 	engine.rootContext()->setContextProperty("FileIO", &fileIO);
 	engine.rootContext()->setContextProperty("maincfg", &maincfg);
+	engine.rootContext()->setContextProperty("manifest", &manifest);
 	engine.rootContext()->setContextProperty("webParser", &webParser);
     engine.rootContext()->setContextProperty("mpSourceParser", &mpSourceParser);
     engine.rootContext()->setContextProperty("username", username);
@@ -167,5 +170,7 @@ int main(int argc, char *argv[])
     if (engine.rootObjects().isEmpty())
         return -1;
 
-    return app.exec();
+    int result = app.exec();
+    webParser.stopBackendService();
+    return result;
 }

@@ -19,7 +19,14 @@ ApplicationWindow {
     property string button_text: "登录微信公众平台"
     property bool button_enabled: true
     
+    property bool syncInProgress: false
+    property string syncStatus: ""
+    property int syncProgress: 0
+    property bool syncCompleted: false
+    property var recommendations: []
+    
     property var settingsWindow: null
+    property var resultsWindow: null
 
     Connections {
         target: webParser
@@ -28,6 +35,79 @@ ApplicationWindow {
             wx_status = "已登录";
             var wx_expire = webParser.getWxExpireTime();
             finishWindow.wx_expire = wx_expire;
+        }
+        function onSyncProgressUpdated(message, progress) {
+            syncStatus = message;
+            syncProgress = progress;
+        }
+        function onSyncCompleted(result) {
+            syncInProgress = false;
+            syncCompleted = true;
+            syncStatus = "同步完成！";
+            console.log("Sync result:", result);
+            // 尝试加载最新的推荐文件
+            loadRecommendations();
+        }
+        function onSyncError(error) {
+            syncInProgress = false;
+            syncStatus = "同步失败：" + error;
+            showMessageDialog("同步失败", error);
+        }
+    }
+
+    MessageDialog {
+        id: infoDialog
+        title: ""
+        text: ""
+        buttons: MessageDialog.Ok
+    }
+
+    function showMessageDialog(title, text) {
+        infoDialog.title = title;
+        infoDialog.text = text;
+        infoDialog.open();
+    }
+
+    function loadRecommendations() {
+        // 查找最新的 recommend 文件
+        var files = FileIO.listFiles(appDirPath);
+        var latestFile = "";
+        var latestTime = 0;
+        
+        for (var i = 0; i < files.length; i++) {
+            var file = files[i];
+            if (file.startsWith("recommend_") && file.endsWith(".json")) {
+                var timeStr = file.replace("recommend_", "").replace(".json", "");
+                var time = parseInt(timeStr);
+                if (time > latestTime) {
+                    latestTime = time;
+                    latestFile = file;
+                }
+            }
+        }
+        
+        if (latestFile !== "") {
+            var filePath = appDirPath + "/" + latestFile;
+            var content = FileIO.read(filePath);
+            if (content) {
+                var json = JSON.parse(content);
+                // 解析 AI 返回的格式
+                if (json.choices && json.choices.length > 0) {
+                    var message = json.choices[0].message;
+                    if (message.content) {
+                        // 尝试解析 message.content 中的 JSON
+                        try {
+                            recommendations = JSON.parse(message.content);
+                        } catch(e) {
+                            console.error("Failed to parse AI response:", e);
+                            recommendations = [];
+                        }
+                    }
+                } else {
+                    // 直接是数组
+                    recommendations = json;
+                }
+            }
         }
     }
 
@@ -108,6 +188,82 @@ ApplicationWindow {
                     onClicked: {
                         confirmDialog.open()
                     }
+                }
+            }
+
+            RowLayout {
+                Layout.alignment: Qt.AlignHCenter
+                spacing: 20
+
+                Button {
+                    id: syncButton
+                    text: syncInProgress ? "同步中..." : "立即同步"
+                    Layout.preferredWidth: 160
+                    enabled: !syncInProgress
+                    onClicked: {
+                        syncInProgress = true;
+                        syncCompleted = false;
+                        syncProgress = 0;
+                        syncStatus = "准备同步...";
+                        webParser.startSync();
+                    }
+                }
+
+                Button {
+                    id: viewResultsButton
+                    text: "查看推荐"
+                    Layout.preferredWidth: 160
+                    enabled: syncCompleted
+                    onClicked: {
+                        // 每次点击都重新加载最新的推荐文件
+                        loadRecommendations();
+                        
+                        if (recommendations.length === 0) {
+                            showMessageDialog("提示", "暂无推荐内容，请先进行同步");
+                            return;
+                        }
+                        
+                        if (resultsWindow) {
+                            // 更新已存在窗口的推荐数据
+                            resultsWindow.recommendations = recommendations;
+                            resultsWindow.visible = true;
+                            resultsWindow.raise();
+                        } else {
+                            var component = Qt.createComponent("ResultsView.qml");
+                            if (component.status === Component.Ready) {
+                                resultsWindow = component.createObject(finishWindow, {
+                                    "width": 800,
+                                    "height": 600,
+                                    "visible": true,
+                                    "recommendations": recommendations
+                                });
+                            } else {
+                                console.error("Failed to load ResultsView.qml:", component.errorString());
+                            }
+                        }
+                    }
+                }
+            }
+
+            // 进度条区域
+            ColumnLayout {
+                Layout.alignment: Qt.AlignHCenter
+                spacing: 10
+                visible: syncInProgress || syncStatus !== ""
+
+                Text {
+                    text: syncStatus
+                    color: Material.foreground
+                    font.pixelSize: 14
+                    Layout.alignment: Qt.AlignHCenter
+                }
+
+                ProgressBar {
+                    Layout.preferredWidth: 400
+                    from: 0
+                    to: 100
+                    value: syncProgress
+                    visible: syncInProgress
                 }
             }
 

@@ -306,6 +306,39 @@ Window {
                     spacing: 15
                     
                     Text {
+                        text: "采集数量"
+                        font.pointSize: 14
+                        font.weight: Font.Medium
+                        color: "#cccccc"
+                    }
+                    
+                    TextField {
+                        id: collectLimitField
+                        Layout.fillWidth: true
+                        text: maincfg.get("mp.collect_limit")
+                        placeholderText: "请输入采集数量"
+                        color: "#ffffff"
+                        background: Rectangle { color: "#1e1e1e"; radius: 4 }
+                        
+                        onTextChanged: {
+                            maincfg.set("mp.collect_limit", text)
+                        }
+                    }
+                }
+            }
+            
+            Rectangle {
+                Layout.fillWidth: true
+                height: 60
+                radius: 8
+                color: "#2d2d2d"
+                
+                RowLayout {
+                    anchors.fill: parent
+                    anchors.margins: 15
+                    spacing: 15
+                    
+                    Text {
                         text: "兴趣管理"
                         font.pointSize: 14
                         font.weight: Font.Medium
@@ -789,7 +822,7 @@ Window {
                     }
                     
                     Text {
-                        text: "版本 1.0.0"
+                        text: "版本 "+manifest.get("Version")
                         font.pointSize: 14
                         color: "#ffffff"
                         opacity: 0.8
