@@ -26,8 +26,15 @@ static const QString pageURLs[50] {
 	QStringLiteral("qrc:/qt/qml/nku_infollows/finish.qml"),
 };
 
+cfgLoader maincfg("config.json");
+cfgLoader manifest("manifest.json");
+WebParser webParser(nullptr, &maincfg);
+MPSourceParser mpSourceParser;
+FileIO fileIO;
+
+
 bool checkAndStartBackend(const QString& appDir) {
-    QString backendUrl = "http://localhost:8001";
+    QString backendUrl = maincfg.get("mp.base");
     
     QNetworkAccessManager manager;
     QNetworkRequest request(QUrl(backendUrl + "/api/health"));
@@ -91,8 +98,7 @@ int main(int argc, char *argv[])
     qputenv("QML_XHR_ALLOW_FILE_READ", "1");
 
     QGuiApplication app(argc, argv);
-    cfgLoader maincfg("config.json");
-	cfgLoader manifest("manifest.json");
+  
     maincfg.set("appDirPath", QCoreApplication::applicationDirPath());
     
     
@@ -103,10 +109,7 @@ int main(int argc, char *argv[])
         qDebug() << "Checking backend status...";
         checkAndStartBackend(appDir);
     }
-
-	WebParser webParser(nullptr, &maincfg);
-	MPSourceParser mpSourceParser;
-	FileIO fileIO;
+    
 	
     if (mp_status == QStringLiteral("local")) {
         try {

@@ -21,7 +21,7 @@ Rectangle {
         
         Text {
             id:titletext
-            text: "End User License Agreement"
+            text: "最终用户协议"
             font.pointSize: 20
             font.weight: Font.Bold
             color: "#e0e0e0"
@@ -63,14 +63,14 @@ Rectangle {
             
             MyButton {
                 id: declineButton
-                width: 120
+                width: 140
                 height: 40
                 
                 baseColor: "#1e1e1e"
                 bordercolor: "#424242"
                 textColor: "#e0e0e0"
                 textPointSize: 14
-                text: "Decline"
+                text: "拒绝并退出"
                 
                 onClicked: {
                     // 拒绝协议，退出应用
@@ -80,14 +80,14 @@ Rectangle {
             
             MyButton {
                 id: acceptButton
-                width: 120
+                width: 190
                 height: 40
                 
                 baseColor: "#2196f3"
                 bordercolor: "#2196f3"
                 textColor: "#ffffff"
                 textPointSize: 14
-                text: "Accept"
+                text: "我已详细阅读并同意"
                 
                 onClicked: {
                     // 接受协议，跳转到欢迎界面

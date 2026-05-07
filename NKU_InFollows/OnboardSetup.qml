@@ -99,9 +99,9 @@ Rectangle {
                         }
                         
                         Text {
-                            text: "添加和管理您关注的公众号"
+                            text: "(建议先跳过此操作，\n之后在设置界面修改。)"
                             font.pointSize: 12
-                            color: "#888888"
+                            color: "#ebebeb"
                         }
                     }
                     

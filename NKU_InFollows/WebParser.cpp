@@ -151,7 +151,7 @@ QString WebParser::postAIRq(const QString &model ,const QString &sys_prompt,
 
 void WebParser::startSync() {
     QMetaObject::invokeMethod(this, [this]() {
-        QString baseUrl = "http://localhost:8001";
+        QString baseUrl = config->get("mp.url").replace("/api/v1/wx","");
         QString access = config->get("mp.access_token");
         
         QString collectLimitStr = config->get("mp.collect_limit");
@@ -202,7 +202,6 @@ QJsonObject WebParser::getMPSearchRq(const QString &search, const QUrl &Url, con
         urlStr = urlStr.replace("wxmps", "wx/mps");
     }
     
-    // Append search term as path parameter
     if (!urlStr.endsWith("/")) {
         urlStr += "/";
     }
@@ -216,23 +215,11 @@ QJsonObject WebParser::getMPSearchRq(const QString &search, const QUrl &Url, con
     requestUrl.setQuery(query);
     
     qDebug() << "Search URL:" << requestUrl.toString();
-    qDebug() << "Access token:" << access;
     
-    QNetworkAccessManager localmanager;
-
-    QNetworkRequest rq(requestUrl);
-    rq.setRawHeader("Authorization", "Bearer " + access.toUtf8());
-    rq.setRawHeader("accept", "application/json");
-    
-    QNetworkReply* reply = localmanager.get(rq);
-    
-    QEventLoop loop;
-    connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
-    loop.exec();
+    QByteArray data = syncGetRequest(requestUrl, access, 15000);
     
     QJsonObject result;
-    if (reply->error() == QNetworkReply::NoError) {
-        QByteArray data = reply->readAll();
+    if (!data.isEmpty()) {
         qDebug() << "Search response data:" << data;
         
         if (data.isEmpty() || data == "null" || data == "\"null\"") {
@@ -252,16 +239,10 @@ QJsonObject WebParser::getMPSearchRq(const QString &search, const QUrl &Url, con
             }
         }
     } else {
-        qDebug() << "Error in getMPSearchRq:" << reply->errorString();
-        if (reply->errorString().contains("Connection refused")) {
-            qDebug() << "Backend not running, attempting to start...";
-            startBackendService();
-        }
+        qDebug() << "Error in getMPSearchRq: empty response or timeout";
     }
     
-    reply->deleteLater();
     return result;
-
 }
 
 QJsonObject WebParser::getMPSearchRq(const QString& search, const QString& Url, const QString access) {
@@ -409,27 +390,52 @@ QString WebParser::wxLoginGetQR(const QString &Url,const QString access) {
     }
 }
 
-QString WebParser::getLoginStatus(const QString &Url, const QString access) {
-	QNetworkAccessManager localManager;
-
-    QNetworkRequest rq(Url);
+QByteArray WebParser::syncGetRequest(const QUrl& url, const QString& access, int timeoutMs) {
+    QNetworkAccessManager localManager;
+    QNetworkRequest rq(url);
     rq.setRawHeader("accept", "application/json");
-    rq.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
     rq.setRawHeader("Authorization", QString("Bearer %1").arg(access).toUtf8());
-	
-	QNetworkReply* reply =  localManager.get(rq);
-
+    
+    QNetworkReply* reply = localManager.get(rq);
+    
     QEventLoop loop;
-    connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
-	loop.exec();
+    QTimer timeoutTimer;
+    timeoutTimer.setSingleShot(true);
+    
+    QObject::connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
+    QObject::connect(&timeoutTimer, &QTimer::timeout, &loop, &QEventLoop::quit);
+    
+    timeoutTimer.start(timeoutMs);
+    loop.exec();
+    
+    if (timeoutTimer.isActive()) {
+        timeoutTimer.stop();
+        if (reply->error() == QNetworkReply::NoError) {
+            QByteArray data = reply->readAll();
+            reply->deleteLater();
+            return data;
+        } else {
+            qDebug() << "Request error:" << reply->errorString();
+            reply->deleteLater();
+            return QByteArray();
+        }
+    } else {
+        qDebug() << "Request timeout for URL:" << url.toString();
+        reply->abort();
+        reply->deleteLater();
+        return QByteArray();
+    }
+}
 
-	QString login_status = "waiting";
-    if (reply->error() == QNetworkReply::NoError) {
-        QByteArray data = reply->readAll();
+QString WebParser::getLoginStatus(const QString &Url, const QString access) {
+    QByteArray data = syncGetRequest(QUrl(Url), access, 15000);
+    
+    QString login_status = "waiting";
+    if (!data.isEmpty()) {
         qDebug() << "Response data:" << data;
         QJsonDocument res = QJsonDocument::fromJson(data);
         if (!res.isNull() && res.isObject()) {
-			QJsonObject returndata = res.object().value("data").toObject();
+            QJsonObject returndata = res.object().value("data").toObject();
             if (returndata.value("login_status").isBool()) {
                 if (returndata.value("login_status").toBool()) {
                     login_status = "success";
@@ -444,8 +450,8 @@ QString WebParser::getLoginStatus(const QString &Url, const QString access) {
             qDebug() << "Error parsing JSON response";
         }
     } else {
-        qDebug() << "Error in getLoginStatus:" << reply->errorString();
-	}
+        qDebug() << "Error in getLoginStatus: empty response or timeout";
+    }
 
     return login_status;
 }
@@ -459,7 +465,9 @@ void WebParser::updateWxExpireTime() {
 
 QString WebParser::checkRSSWxStatus(const QString &access) {
 	//利用一个固定的URL来检查微信登录状态，返回结果中包含message字段，值为"success"表示登录成功，否则表示登录失败
-    QUrl Url = QUrl("http://localhost:8001/api/v1/wx/mps/update/MP_WXS_2397804841");
+	std::string baseUrl = config->get("mp.base").toStdString();
+    std::string url = baseUrl+"/api/v1/wx/mps/update/MP_WXS_2397804841";
+	QUrl Url = QUrl(QString::fromStdString(url));
 
 	QNetworkAccessManager localManager;
     QNetworkRequest rq(Url);
@@ -507,7 +515,7 @@ void WebParser::checkLoginStatus() {
         m_checkTimer->stop();
         emit loginSuccess();
     } else {
-        m_checkTimer->start(2000);
+        m_checkTimer->start(8000);
     }
 }
 
@@ -860,6 +868,7 @@ QString WebParser::getAIAnalysis() {
     qDebug() << "Starting AI analysis...";
     
     QString appDir = QCoreApplication::applicationDirPath();
+    QString aiRcmdNum = config->get("ai.rcmdn");
     
     QString interestsPath = appDir + "/u_interests.json";
     QFile interestsFile(interestsPath);
@@ -947,12 +956,13 @@ You are a professional recommendation assistant. Your role is to analyze user in
 %2
 
 ## Task:
-Please recommend TOP 5 articles that best match the user's interests. Output ONLY a valid JSON array of article IDs:
-[0, 1, 7, 3, 6]
-)").arg(interestsStr).arg(articlesStr);
+Please recommend TOP %3 articles that best match the user's interests. Output ONLY a valid JSON array of article IDs:
+for example: [0, 1, 7, ..., 6]
+)").arg(interestsStr).arg(articlesStr).arg(aiRcmdNum);
     
-    QString model = "deepseek-r1:1.5b";
+    QString model = config->get("ai.model");
     QString aiUrl = config->get("ai.url");
+    
     if (aiUrl.isEmpty()) {
         aiUrl = "http://localhost:11434/v1";
     }

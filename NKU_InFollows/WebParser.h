@@ -69,6 +69,7 @@ private:
 	bool m_isLogin;
 	QTimer* m_checkTimer;
 	QProcess* m_backendProcess;
+	QByteArray syncGetRequest(const QUrl& url, const QString& access, int timeoutMs = 15000);
 	void checkLoginStatusInternal();
 private slots:
 	Q_INVOKABLE QString onFinished(QNetworkReply* reply);

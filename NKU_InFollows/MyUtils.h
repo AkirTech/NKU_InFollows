@@ -10,4 +10,5 @@
 #endif
 
 std::string getUserName();
-namespace myutil;
+namespace myutil {
+}

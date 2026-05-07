@@ -173,6 +173,14 @@ Rectangle {
                         Layout.fillWidth: true
                         font.pointSize: 12
                         placeholderText: "例如: gpt-3.5-turbo"
+                        text: {
+                            try {
+                                return maincfg.get("ai.model")
+                            } catch (e) {
+                                console.log(e)
+                                return ""
+                            }
+                        }
                         color: "#ffffff"
                         background: Rectangle { color: "#1e1e1e"; radius: 4 }
                     }

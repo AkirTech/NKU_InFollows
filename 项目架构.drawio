@@ -1,6 +1,6 @@
 <mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/29.6.6 Chrome/144.0.7559.236 Electron/40.8.4 Safari/537.36" version="29.6.6">
   <diagram name="第 1 页" id="R3DnLmcDSJPHcmnZ4tpt">
-    <mxGraphModel dx="1103" dy="827" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" math="0" shadow="0">
+    <mxGraphModel dx="2205" dy="1655" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -38,7 +38,7 @@
         <mxCell id="eYOzJbOh3SKC4cDPMViA-10" parent="eYOzJbOh3SKC4cDPMViA-8" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=1;fontSize=18;" value="cpp 层" vertex="1">
           <mxGeometry height="30" width="140" x="80" y="640" as="geometry" />
         </mxCell>
-        <mxCell id="eYOzJbOh3SKC4cDPMViA-11" parent="eYOzJbOh3SKC4cDPMViA-8" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;" value="前端界面状态改变" vertex="1">
+        <mxCell id="eYOzJbOh3SKC4cDPMViA-11" parent="eYOzJbOh3SKC4cDPMViA-8" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;" value="前端界面状态改变（信号）" vertex="1">
           <mxGeometry height="60" width="120" x="90" y="140" as="geometry" />
         </mxCell>
         <mxCell id="eYOzJbOh3SKC4cDPMViA-12" parent="eYOzJbOh3SKC4cDPMViA-8" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;" value="数据持久化&lt;div&gt;（本地存储）&lt;/div&gt;" vertex="1">
@@ -54,6 +54,9 @@
         </mxCell>
         <mxCell id="eYOzJbOh3SKC4cDPMViA-27" parent="eYOzJbOh3SKC4cDPMViA-8" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;" value="map AI请求" vertex="1">
           <mxGeometry height="60" width="120" x="90" y="360" as="geometry" />
+        </mxCell>
+        <mxCell id="xf1pqAaUbyCL4Qq7nmvk-6" edge="1" parent="1" source="eYOzJbOh3SKC4cDPMViA-13" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="eYOzJbOh3SKC4cDPMViA-11">
+          <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="eYOzJbOh3SKC4cDPMViA-13" parent="1" style="swimlane;startSize=0;rounded=1;fontSize=18;" value="" vertex="1">
           <mxGeometry height="460" width="560" x="950" y="90" as="geometry" />
@@ -82,7 +85,7 @@
         <mxCell id="eYOzJbOh3SKC4cDPMViA-23" edge="1" parent="eYOzJbOh3SKC4cDPMViA-13" source="eYOzJbOh3SKC4cDPMViA-20" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=18;" target="eYOzJbOh3SKC4cDPMViA-22" value="">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="eYOzJbOh3SKC4cDPMViA-20" parent="eYOzJbOh3SKC4cDPMViA-13" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;" value="主要功能：由公众号名称搜索，获取真实__biz，" vertex="1">
+        <mxCell id="eYOzJbOh3SKC4cDPMViA-20" parent="eYOzJbOh3SKC4cDPMViA-13" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;" value="主要功能：由公众号名称搜索，获取真实MP_ID，" vertex="1">
           <mxGeometry height="100" width="120" x="410" y="50" as="geometry" />
         </mxCell>
         <mxCell id="eYOzJbOh3SKC4cDPMViA-22" parent="eYOzJbOh3SKC4cDPMViA-13" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;" value="json存储公众号真实信息，" vertex="1">
@@ -109,22 +112,34 @@
         <mxCell id="eYOzJbOh3SKC4cDPMViA-26" edge="1" parent="1" source="eYOzJbOh3SKC4cDPMViA-24" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;fontSize=18;" target="eYOzJbOh3SKC4cDPMViA-12">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="eYOzJbOh3SKC4cDPMViA-43" edge="1" parent="1" source="eYOzJbOh3SKC4cDPMViA-28" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;fontSize=18;" target="eYOzJbOh3SKC4cDPMViA-27">
+        <mxCell id="eYOzJbOh3SKC4cDPMViA-43" edge="1" parent="1" source="xf1pqAaUbyCL4Qq7nmvk-3" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;fontSize=18;exitX=0;exitY=0.5;exitDx=0;exitDy=0;" target="eYOzJbOh3SKC4cDPMViA-27">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="840" y="730" />
+              <mxPoint x="840" y="800" />
               <mxPoint x="840" y="490" />
             </Array>
           </mxGeometry>
         </mxCell>
         <mxCell id="eYOzJbOh3SKC4cDPMViA-28" parent="1" style="swimlane;startSize=0;rounded=1;fontSize=18;" value="" vertex="1">
-          <mxGeometry height="200" width="560" x="960" y="630" as="geometry" />
+          <mxGeometry height="270" width="560" x="960" y="600" as="geometry" />
         </mxCell>
         <mxCell id="eYOzJbOh3SKC4cDPMViA-29" parent="eYOzJbOh3SKC4cDPMViA-28" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=1;fontSize=18;" value="实现层：网络请求处理" vertex="1">
           <mxGeometry height="30" width="260" x="150" y="20" as="geometry" />
         </mxCell>
-        <mxCell id="eYOzJbOh3SKC4cDPMViA-30" parent="eYOzJbOh3SKC4cDPMViA-28" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;" value="原生Qt的Network请求实现方法，&lt;div&gt;返回QString对象或作为void&lt;/div&gt;" vertex="1">
-          <mxGeometry height="60" width="290" x="135" y="70" as="geometry" />
+        <mxCell id="xf1pqAaUbyCL4Qq7nmvk-2" edge="1" parent="eYOzJbOh3SKC4cDPMViA-28" source="eYOzJbOh3SKC4cDPMViA-30" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="xf1pqAaUbyCL4Qq7nmvk-1" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="eYOzJbOh3SKC4cDPMViA-30" parent="eYOzJbOh3SKC4cDPMViA-28" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;" value="原生Qt的Network请求实现方法" vertex="1">
+          <mxGeometry height="60" width="290" x="210" y="70" as="geometry" />
+        </mxCell>
+        <mxCell id="xf1pqAaUbyCL4Qq7nmvk-4" edge="1" parent="eYOzJbOh3SKC4cDPMViA-28" source="xf1pqAaUbyCL4Qq7nmvk-1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="xf1pqAaUbyCL4Qq7nmvk-3" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="xf1pqAaUbyCL4Qq7nmvk-1" parent="eYOzJbOh3SKC4cDPMViA-28" style="whiteSpace=wrap;html=1;fontSize=18;rounded=0;" value="使用QJsonDocument等解析请求结果" vertex="1">
+          <mxGeometry height="60" width="270" x="220" y="170" as="geometry" />
+        </mxCell>
+        <mxCell id="xf1pqAaUbyCL4Qq7nmvk-3" parent="eYOzJbOh3SKC4cDPMViA-28" style="whiteSpace=wrap;html=1;fontSize=18;rounded=0;" value="返回" vertex="1">
+          <mxGeometry height="60" width="120" x="40" y="170" as="geometry" />
         </mxCell>
         <mxCell id="eYOzJbOh3SKC4cDPMViA-34" edge="1" parent="1" source="eYOzJbOh3SKC4cDPMViA-9" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.25;entryDx=0;entryDy=0;fontSize=18;" target="eYOzJbOh3SKC4cDPMViA-30">
           <mxGeometry relative="1" as="geometry" />
@@ -165,10 +180,10 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="eYOzJbOh3SKC4cDPMViA-44" edge="1" parent="1" source="eYOzJbOh3SKC4cDPMViA-28" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;fontSize=18;exitX=0;exitY=0.5;exitDx=0;exitDy=0;" target="eYOzJbOh3SKC4cDPMViA-12">
+        <mxCell id="eYOzJbOh3SKC4cDPMViA-44" edge="1" parent="1" source="xf1pqAaUbyCL4Qq7nmvk-3" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;fontSize=18;exitX=0;exitY=0.5;exitDx=0;exitDy=0;" target="eYOzJbOh3SKC4cDPMViA-12">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="840" y="730" />
+              <mxPoint x="840" y="800" />
               <mxPoint x="840" y="380" />
             </Array>
           </mxGeometry>

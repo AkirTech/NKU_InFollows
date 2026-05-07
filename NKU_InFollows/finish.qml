@@ -276,7 +276,8 @@ ApplicationWindow {
                 onClicked: {
                     button_enabled = false;
                     button_text = "正在获取二维码...";
-                    var result = webParser.wxLoginGetQR("http://localhost:8001", mptoken);
+                    var mpBase = maincfg.get("mp.base");
+                    var result = webParser.wxLoginGetQR(mpBase, mptoken);
                     console.log(result);
                     if (result === "生成成功") {
                         qrTimer.start();
@@ -315,7 +316,8 @@ ApplicationWindow {
             Qt.openUrlExternally("file:///" + qrPath);
             button_text = "等待扫描... (点击关闭)";
             button_enabled = true;
-            webParser.wxLoginCheckLoop("http://localhost:8001", mptoken);
+            var mpBase = maincfg.get("mp.base");
+            webParser.wxLoginCheckLoop(mpBase, mptoken);
         }
     }
 

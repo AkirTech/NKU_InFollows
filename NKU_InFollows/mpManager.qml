@@ -214,8 +214,8 @@ Window {
                         
                         console.log("搜索公众号:", addNameField.text)
                         console.log("mptoken:", mptoken)
-                        
-                        var mpUrl = "http://localhost:8001/api/v1/wx/mps/search"
+                        var mpBaseUrl = maincfg.get("mp.base");
+                        var mpUrl = mpBaseUrl+"/api/v1/wx/mps/search"
                         var searchUrl = mpUrl
                         console.log("Search URL (base):", searchUrl)
                         
@@ -332,7 +332,7 @@ Window {
                         }
                         
                         try {
-                            var mpUrl = "http://localhost:8001"
+                            var mpUrl = maincfg.get("mp.base");
                             var result = webParser.addMP(mpUrl, mptoken, addMpDialog.foundNickname, addMpDialog.foundCover, addMpDialog.foundRawId, addMpDialog.foundSignature)
                             console.log("Add MP result:", result)
                             

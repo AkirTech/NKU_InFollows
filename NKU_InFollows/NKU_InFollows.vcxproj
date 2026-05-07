@@ -126,6 +126,7 @@
     <None Include="mpManager.qml" />
     <None Include="mpSource.qml" />
     <None Include="MyButton.qml" />
+    <None Include="OnboardSetup.qml" />
     <None Include="qr_code.qml" />
     <None Include="Settings.qml" />
     <None Include="Style.qml" />

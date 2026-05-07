@@ -185,7 +185,7 @@ Rectangle {
         color: "#ffffff"
         opacity: 0.8
         horizontalAlignment: Text.AlignHCenter
-        text: "Welcome to NKU InFollows System"
+        text: "NKU_InFollows | 欢迎！"
         
         SequentialAnimation {
             running: true
@@ -225,7 +225,7 @@ Rectangle {
             bordercolor: "#ccc"
             textColor: "#ffffff"
             textPointSize: 14
-            text: "Back"
+            text: "返回"
             
             onClicked: {
                 stackView.pop();
@@ -241,7 +241,7 @@ Rectangle {
             bordercolor: "#ccc"
             textColor: "#ffffff"
             textPointSize: 14
-            text: "Get Started"
+            text: "开始"
             
             onClicked: {
                 stackView.push("aiInit.qml");
