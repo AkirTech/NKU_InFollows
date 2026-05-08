@@ -129,6 +129,7 @@
     <None Include="OnboardSetup.qml" />
     <None Include="qr_code.qml" />
     <None Include="Settings.qml" />
+    <None Include="Splash.qml" />
     <None Include="Style.qml" />
     <ClCompile Include="WebParser.cpp">
       <DynamicSource Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">input</DynamicSource>

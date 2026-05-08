@@ -1,11 +1,11 @@
 <mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/29.6.6 Chrome/144.0.7559.236 Electron/40.8.4 Safari/537.36" version="29.6.6">
   <diagram name="第 1 页" id="R3DnLmcDSJPHcmnZ4tpt">
-    <mxGraphModel dx="2205" dy="1655" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" math="0" shadow="0">
+    <mxGraphModel dx="1866" dy="1400" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
-        <mxCell id="F4S3WrnvqZsMesWTH_iy-2" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=1;fontSize=28;" value="&lt;font&gt;项目架构&lt;/font&gt;" vertex="1">
-          <mxGeometry height="50" width="390" x="605" y="20" as="geometry" />
+        <mxCell id="F4S3WrnvqZsMesWTH_iy-2" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=1;fontSize=34;" value="&lt;font&gt;NKU_InFollows | 项目架构&lt;/font&gt;" vertex="1">
+          <mxGeometry height="50" width="535" x="533" y="20" as="geometry" />
         </mxCell>
         <mxCell id="eYOzJbOh3SKC4cDPMViA-2" parent="1" style="swimlane;startSize=0;rounded=1;fontSize=18;" value="" vertex="1">
           <mxGeometry height="700" width="300" x="60" y="100" as="geometry">

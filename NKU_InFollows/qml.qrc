@@ -1,5 +1,5 @@
 <RCC>
-    <qresource lang="qml" prefix="/qt/qml/nku_infollows">
+    <qresource prefix="/qt/qml/nku_infollows" lang="qml">
         <file>main.qml</file>
         <file>Greet.qml</file>
         <file>Collect1.qml</file>
@@ -20,5 +20,6 @@
         <file>interestManager.qml</file>
         <file>OnboardSetup.qml</file>
         <file>ResultsView.qml</file>
+        <file>Splash.qml</file>
     </qresource>
 </RCC>

@@ -14,6 +14,7 @@
 #include <QtNetwork/QNetworkReply>
 #include <QEventLoop>
 #include <QThread>
+#include <QQmlComponent>
 
 
 static const QString pageURLs[50] {
@@ -33,7 +34,9 @@ MPSourceParser mpSourceParser;
 FileIO fileIO;
 
 
-bool checkAndStartBackend(const QString& appDir) {
+void setSplashProgress(QObject* splash, int progress);
+
+bool checkAndStartBackend(const QString& appDir, QObject* splashWindow) {
     QString backendUrl = maincfg.get("mp.base");
     
     QNetworkAccessManager manager;
@@ -69,12 +72,16 @@ bool checkAndStartBackend(const QString& appDir) {
                 if (checkReply->error() == QNetworkReply::NoError) {
                     qDebug() << "Backend is ready!";
                     checkReply->deleteLater();
+                    setSplashProgress(splashWindow, 50);
                     return true;
                 }
                 checkReply->deleteLater();
                 
+                int progress = 10 + (i + 1) * 4;
+                setSplashProgress(splashWindow, progress);
+                qDebug() << "Waiting for backend to be ready..." << (i+1) << "/10, progress:" << progress << "%";
+                
                 QThread::sleep(1);
-                qDebug() << "Waiting for backend to be ready..." << (i+1) << "/10";
             }
             
             qDebug() << "Backend did not become ready in time";
@@ -86,7 +93,22 @@ bool checkAndStartBackend(const QString& appDir) {
     }
     
     qDebug() << "Backend is already running";
+    setSplashProgress(splashWindow, 50);
     return true;
+}
+
+void updateSplashStatus(QObject* splash, const QString& status) {
+    if (splash) {
+        QMetaObject::invokeMethod(splash, "updateStatus",
+            Q_ARG(QVariant, QVariant(status)));
+    }
+}
+
+void setSplashProgress(QObject* splash, int progress) {
+    if (splash) {
+        QMetaObject::invokeMethod(splash, "setProgress",
+            Q_ARG(QVariant, QVariant(progress)));
+    }
 }
 
 int main(int argc, char *argv[])
@@ -94,44 +116,65 @@ int main(int argc, char *argv[])
 #if defined(Q_OS_WIN) && QT_VERSION_CHECK(5, 6, 0) <= QT_VERSION && QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 #endif
-    //Set QML_XHR_ALLOW_FILE_READ to 1 to enable XHR feature.
     qputenv("QML_XHR_ALLOW_FILE_READ", "1");
 
     QGuiApplication app(argc, argv);
   
     maincfg.set("appDirPath", QCoreApplication::applicationDirPath());
-    
-    
     QString appDir = QCoreApplication::applicationDirPath();
+    
+    QObject* splashWindow = nullptr;
+    
+    QQmlApplicationEngine splashEngine;
+    QQmlComponent splashComponent(&splashEngine);
+    splashComponent.loadUrl(QUrl::fromLocalFile(appDir + "/Splash.qml"));
+    
+    if (splashComponent.status() == QQmlComponent::Loading) {
+        QEventLoop loop;
+        QObject::connect(&splashComponent, &QQmlComponent::statusChanged, &loop, &QEventLoop::quit);
+        loop.exec();
+    }
+    
+    if (splashComponent.status() == QQmlComponent::Ready) {
+        splashWindow = splashComponent.create();
+        qDebug() << "Splash window created successfully";
+        setSplashProgress(splashWindow, 0);
+    } else {
+        qWarning() << "Failed to load splash component:" << splashComponent.errorString();
+    }
+    
+    updateSplashStatus(splashWindow, "正在初始化...");
+    setSplashProgress(splashWindow, 5);
     
     QString mp_status = maincfg.get("mp.mode");
     if (mp_status == QStringLiteral("local")) {
+        updateSplashStatus(splashWindow, "正在检查后端服务...");
+        setSplashProgress(splashWindow, 10);
         qDebug() << "Checking backend status...";
-        checkAndStartBackend(appDir);
+        checkAndStartBackend(appDir, splashWindow);
     }
     
-	
     if (mp_status == QStringLiteral("local")) {
         try {
-			qDebug() << "Initializing local mp server...";
-			QString mp_username = maincfg.get("username");
-			QString mp_pwd = maincfg.get("mp.password");
+            updateSplashStatus(splashWindow, "正在登录本地服务器...");
+            setSplashProgress(splashWindow, 50);
+            qDebug() << "Initializing local mp server...";
+            QString mp_username = maincfg.get("username");
+            QString mp_pwd = maincfg.get("mp.password");
             QString pwd = (mp_pwd == QString("")) ? QString("admin@123") : mp_pwd;
             QUrl mp_rq_url = QUrl(maincfg.get("mp.url") + QString("/auth/token"));
-			QString token = webParser.we_login(mp_rq_url,
-                mp_username, pwd);
-            maincfg.set("mp.access_token",token);
+            QString token = webParser.we_login(mp_rq_url, mp_username, pwd);
+            maincfg.set("mp.access_token", token);
+            setSplashProgress(splashWindow, 70);
         }
         catch (const std::exception& e) {
             qDebug() << "Error initializing local mp server,escaping.";
-            // QMessageBox::critical(nullptr, "Error", "Failed to initialize local model. Please check the configuration and try again.");
-            
-		}
+        }
     }
-    QString status = maincfg.get("OOBE");
     
-	app.setWindowIcon(QIcon(QCoreApplication::applicationDirPath() + "/NKU_InFollows_icon.png"));
-	qInfo() << "Application directory path: " << QCoreApplication::applicationDirPath();
+    QString status = maincfg.get("OOBE");
+    app.setWindowIcon(QIcon(appDir + "/NKU_InFollows_icon.png"));
+    qInfo() << "Application directory path: " << appDir;
 
 #ifdef Q_OS_WIN
     QString username = QProcessEnvironment::systemEnvironment().value("USERNAME");
@@ -140,9 +183,11 @@ int main(int argc, char *argv[])
 #endif
 
     qDebug() << QStringLiteral("当前用户名:") << username;
-	maincfg.set("username", username);
+    maincfg.set("username", username);
     
-
+    updateSplashStatus(splashWindow, "正在加载界面...");
+    setSplashProgress(splashWindow, 85);
+    
     QQmlApplicationEngine engine;
     
     QString restartFlag = maincfg.get("restart_flag");
@@ -153,6 +198,9 @@ int main(int argc, char *argv[])
         if (restartFlag == QStringLiteral("pending")) {
             maincfg.set("restart_flag", QStringLiteral("done"));
             QProcess::startDetached(QCoreApplication::applicationFilePath());
+            if (splashWindow) {
+                QMetaObject::invokeMethod(splashWindow, "closeSplash");
+            }
             return 0;
         } else {
             engine.load(QUrl(pageURLs[6]));
@@ -161,17 +209,29 @@ int main(int argc, char *argv[])
     else {
         engine.load(QUrl(QStringLiteral("qrc:/qt/qml/nku_infollows/main.qml")));
     }
-    // engine.load(QUrl(QStringLiteral("qrc:/qt/qml/nku_infollows/main.qml")));
-	engine.rootContext()->setContextProperty("appDirPath", QCoreApplication::applicationDirPath());
-	engine.rootContext()->setContextProperty("FileIO", &fileIO);
-	engine.rootContext()->setContextProperty("maincfg", &maincfg);
-	engine.rootContext()->setContextProperty("manifest", &manifest);
-	engine.rootContext()->setContextProperty("webParser", &webParser);
+    
+    engine.rootContext()->setContextProperty("appDirPath", appDir);
+    engine.rootContext()->setContextProperty("FileIO", &fileIO);
+    engine.rootContext()->setContextProperty("maincfg", &maincfg);
+    engine.rootContext()->setContextProperty("manifest", &manifest);
+    engine.rootContext()->setContextProperty("webParser", &webParser);
     engine.rootContext()->setContextProperty("mpSourceParser", &mpSourceParser);
     engine.rootContext()->setContextProperty("username", username);
     engine.rootContext()->setContextProperty("mptoken", maincfg.get("mp.access_token"));
-    if (engine.rootObjects().isEmpty())
+    
+    if (engine.rootObjects().isEmpty()) {
+        if (splashWindow) {
+            QMetaObject::invokeMethod(splashWindow, "closeSplash");
+        }
         return -1;
+    }
+    
+    if (splashWindow) {
+        setSplashProgress(splashWindow, 100);
+        updateSplashStatus(splashWindow, "准备就绪");
+        QThread::msleep(1000);
+        QMetaObject::invokeMethod(splashWindow, "closeSplash");
+    }
 
     int result = app.exec();
     webParser.stopBackendService();

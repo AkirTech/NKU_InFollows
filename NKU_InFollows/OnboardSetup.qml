@@ -16,7 +16,7 @@ Rectangle {
         id: confirmcloseDialog
         
         title: "完成设置"
-        text: "软件即将重新启动以开始服务。"
+        text: "需要重新启动本软件才能开始工作。"
         buttons: MessageDialog.Ok | MessageDialog.Cancel
         
         onAccepted: {
