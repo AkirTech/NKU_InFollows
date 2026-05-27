@@ -337,12 +337,19 @@ Window {
                             console.log("Add MP result:", result)
                             
                             if (result.startsWith("SUCCESS")) {
+                            if ( hasKey(mp_sources, addMpDialog.foundId))
+                            {
                                 mp_sources.append({
                                     name: addMpDialog.foundNickname,
                                     id: addMpDialog.foundId
                                 })
                                 saveData()
                                 searchStatus.text = "添加成功！"
+                             }
+                             else{
+                                searchStatus.text = "此公众号已存在，跳过"
+                             }
+                                
                                 
                                 addNameField.text = ""
                                 addMpDialog.searchResult = null
@@ -465,6 +472,16 @@ Window {
         }
     }
     
+    function hasKey(model, value) {
+        for (var i = 0; i < model.count; ++i) {
+            var item = model.get(i);
+            if (item["id"] === value)
+                return false;
+        }
+        return true;
+    }
+
+
     Component.onCompleted: {
         loadData()
     }

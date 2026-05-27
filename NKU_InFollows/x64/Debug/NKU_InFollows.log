@@ -1,5 +1,5 @@
 ﻿   Qt/MSBuild: 3.5.0.0
    Qt: 6.5.3
-  main.cpp
-K:\InFollows\NKU_InFollows\NKU_InFollows\main.cpp(170,38): warning C4101: “e”: 未引用的局部变量
+  rcc qml.qrc
+  qrc_qml.cpp
   NKU_InFollows.vcxproj -> K:\InFollows\NKU_InFollows\x64\Debug\NKU_InFollows.exe

@@ -116,6 +116,9 @@
     <None Include="Splash.qml">
       <Filter>Source Files</Filter>
     </None>
+    <None Include="ResultsView.qml">
+      <Filter>Source Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
